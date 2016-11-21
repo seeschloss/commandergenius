@@ -28,6 +28,7 @@
 #include <iostream>
 
 #ifdef ANDROID
+#include <SDL/SDL_android.h>
 #include <SDL/SDL_mixer.h>
 #endif
 

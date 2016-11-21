@@ -61,7 +61,7 @@ namespace ecl
 	VAL &operator[] (const key_type &key) { 
             iterator i=find(key);
             if (i==this->end())
-                i=insert(this->end(), make_pair(key, VAL()));
+                i=this->insert(this->end(), make_pair(key, VAL()));
             return i->second;
         }
     };

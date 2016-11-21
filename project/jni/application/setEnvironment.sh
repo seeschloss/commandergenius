@@ -56,7 +56,7 @@ CFLAGS="\
 -no-canonical-prefixes -march=armv5te -mtune=xscale -msoft-float \
 -mthumb -O2 -g -DNDEBUG \
 -fomit-frame-pointer -fno-strict-aliasing -finline-limit=300 \
--DANDROID -Wall -Wno-unused -Wa,--noexecstack -Wformat -Werror=format-security \
+-DANDROID -Wall -Wno-unused -Wa,--noexecstack -Wformat \
 -isystem$NDK/platforms/$PLATFORMVER/arch-arm/usr/include \
 -isystem$NDK/sources/cxx-stl/gnu-libstdc++/$NDK_TOOLCHAIN_VERSION/include \
 -isystem$NDK/sources/cxx-stl/gnu-libstdc++/$NDK_TOOLCHAIN_VERSION/libs/$ARCH/include \
