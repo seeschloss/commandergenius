@@ -6,7 +6,7 @@
 #include <string.h>
 #define ENET_BUILDING_LIB 1
 #include "enet/utility.h"
-#include "enet/time.h"
+#include "enet/time-enet.h"
 #include "enet/enet.h"
 
 static enet_uint32 timeCurrent;
