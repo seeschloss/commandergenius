@@ -1,1 +1,0 @@
-bochs/android/bochs/AndroidBuild.sh

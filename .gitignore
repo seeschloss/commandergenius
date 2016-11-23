@@ -10,7 +10,6 @@
 /project/AndroidManifest.xml
 /project/jni/Settings.mk
 /project/jni/application/*/libapplication*.so
-/project/jni/application/src
 /project/res/drawable-xhdpi/ouya_icon.png
 /project/res/drawable/app_icon.png
 /project/proguard-project.txt

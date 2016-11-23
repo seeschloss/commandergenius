@@ -1,1 +1,0 @@
-../xserver-gimp/AndroidPreBuild.sh
