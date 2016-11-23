@@ -19,6 +19,7 @@ How to compile
 ==============
 
 Launch the following commands:
+
 	./changeAppSettings.sh -a
 	./build.sh
 
