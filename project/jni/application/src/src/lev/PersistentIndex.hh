@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Ronald Lamprecht
+ * Copyright (C) 2006,2007,2008,2009 Ronald Lamprecht
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -60,7 +60,7 @@ namespace enigma { namespace lev {
          * 
          * thePackPath " " for a new not yet defined path
          */
-        PersistentIndex(std::string thePackPath, bool systemOnly, 
+        PersistentIndex(std::string thePackPath, bool systemOnly, bool userOwned = true, bool isAuto =false,
                 double defaultLocation = INDEX_DEFAULT_PACK_LOCATION,
                 std::string anIndexName = "",
                 std::string theIndexFilename = INDEX_STD_FILENAME, 
@@ -73,10 +73,14 @@ namespace enigma { namespace lev {
         PersistentIndex(std::istream *legacyIndex, std::string thePackPath,  bool isZip = false,
                 std::string anIndexName = "", std::string theIndexFilename = INDEX_STD_FILENAME);
         ~PersistentIndex();
-        void load(bool systemOnly, bool update = false);
+        
+        /**
+         * 
+         */
+        void load(bool loadSystemFS = false, bool update = false);
         void loadDoc();
         std::string getPackPath();
-        bool setName(std::string newName);
+        bool setName(std::string newName, bool isSokoball);
         std::string getOwner();
         void setOwner(std::string newOwner);
         int getRelease();
@@ -101,9 +105,10 @@ namespace enigma { namespace lev {
         void erase(int pos);
         void exchange(int pos1, int pos2);
         virtual bool isSource(Proxy * aProxy);
+        virtual void updateFromFolder();
         bool save(bool allowOverwrite = true);
     protected:
-        std::string packPath;  // "auto", "",...
+        std::string packPath;  // "auto", "", "enigma_i", ...
         std::string indexFilename;
         std::string owner;
         int release;
@@ -113,18 +118,23 @@ namespace enigma { namespace lev {
         bool isModified;
         bool isUserOwned;
         bool isEditable;
+        bool isAuto;
         std::string indexUrl;
     private:
-	static std::vector<PersistentIndex *> indexCandidates;
+        static std::vector<PersistentIndex *> indexCandidates;
         std::string absIndexPath;
         XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc;
         XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *infoElem;
         XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *updateElem;
         XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *levelsElem;
         
-	static void checkCandidate(PersistentIndex * candidate);
+//        static void checkCandidate(PersistentIndex * candidate);
+        static void checkCandidate(std::string thePackPath, bool systemOnly, bool userOwned =true, 
+                bool isAuto =false, bool isSystemCross =false, bool isUserCross =false, 
+                double defaultLocation =INDEX_DEFAULT_PACK_LOCATION, std::string anIndexName ="",
+                std::string theIndexFilename =INDEX_STD_FILENAME, std::string aGroupName =INDEX_DEFAULT_GROUP);
         // legacy 0.92
-        void parsePar(const string& par, int& par_value, std::string& par_text);
+        void parsePar(const std::string& par, int& par_value, std::string& par_text);
     };
 
     void AddLevelPack (const char *init_file, const char *name);

@@ -95,7 +95,7 @@ namespace enigma { namespace lev {
         Index(std::string anIndexName = "Unnamed Pack", 
                 std::string aGroupName = INDEX_DEFAULT_GROUP, 
                 double defaultLocation = INDEX_DEFAULT_PACK_LOCATION);
-        ~Index();
+        virtual ~Index();
         
         std::string getName();
         std::string getGroupName();
@@ -127,6 +127,7 @@ namespace enigma { namespace lev {
                 std::map<std::string, std::string> varExtensions = nullExtensions);
         virtual void clear();
         void updateFromProxies();
+        virtual void updateFromFolder() = 0;
 
         // ---------- LevelPack legacy methods ---to be renamed ------- */
         /*! Return the default SoundSet (see options::SoundSet for meaning) */

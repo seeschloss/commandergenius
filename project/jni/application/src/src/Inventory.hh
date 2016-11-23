@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2006 Daniel Heck
+ * Copyright (C) 2009 Ronald Lamprecht
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,6 +20,7 @@
 #ifndef INVENTORY_HH_INCLUDED
 #define INVENTORY_HH_INCLUDED
 
+#include "Object.hh"
 #include "ItemHolder.hh"
 #include <string>
 #include <vector>
@@ -26,22 +28,29 @@
 
 namespace enigma
 {
-    using world::Item;          // TODO: remove this after moving Item into enigma namespace
-
-    class Inventory : public ItemHolder {
+    class Item;
+    class Inventory : public Object, public ItemHolder {
     public:
         Inventory();
         ~Inventory();
 
-        // ---------- ItemHolder interface ----------
-        bool is_full() const;
-        virtual bool is_empty() const;
-        void add_item (Item *i);
-        virtual void takeItemsFrom(ItemHolder *ih);
-        virtual Item *yield_first();
+        // Object interface
+        virtual Object *clone() override;
+        virtual void dispose() override;
+        virtual std::string getClass() const override;
 
+        // ---------- ItemHolder interface ----------
+        bool is_full() const override;
+        virtual bool is_empty() const override;
+        void add_item (Item *i) override;
+        virtual void takeItemsFrom(ItemHolder *ih) override;
+        virtual Item *yield_first() override;
+        virtual bool containsKind(std::string kind) const override;
+        
         // ---------- Methods ----------
 
+        void assignOwner(int playerId);
+        
         //! The number of items currently in the inventory
         size_t size() const;
         void clear();
@@ -50,7 +59,7 @@ namespace enigma
         void rotate_right();
         Item *get_item (size_t idx) const;
         Item *yield_item (size_t idx);
-	bool willAddItem(Item *it);
+        bool willAddItem(Item *it);
 
         int find(const std::string& kind, size_t start_idx = 0) const;
 
@@ -61,7 +70,8 @@ namespace enigma
         // Private variables.
         static const unsigned max_items;
         std::vector<Item*> m_items;
+        int ownerId;
     };
-}
+}  // namespace enigma
 
 #endif

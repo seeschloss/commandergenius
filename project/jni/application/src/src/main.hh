@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2003,2004 Daniel Heck
+ * Copyright (C) 2006,2007,2008,2009 Ronald Lamprecht
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,15 +20,18 @@
 #ifndef ENIGMA_MAIN_HH
 #define ENIGMA_MAIN_HH
 
-#define ENIGMACOMPATIBITLITY 1.01
+#define ENIGMACOMPATIBITLITY 1.21
 #define PREFFILENAME "enigmarc.xml"
 #define RATINGSFILENAME "ratings.xml"
+#define TRUSTED_RELEASE 0.92
+#define ASSURED_RELEASE 1.00
 
 #include "file.hh"
 #include "PreferenceManager.hh"
 #include "StateManager.hh"
 #include "DOMErrorReporter.hh"
 #include "DOMSchemaResolver.hh"
+#include "video.hh"
 #include <string>
 #include <vector>
 #include <memory>
@@ -61,13 +65,12 @@ namespace enigma
      */
     class Application {
     public:
-        static Application *get_instance();
-
         Application();
 
         void init(int argc, char **argv);
         void shutdown();
         std::string getVersionInfo();
+        double getEnigmaVersion();
         void setLanguage(std::string newLanguage);
         /**
          * Define a new user path. Files stored to user path use the new path
@@ -126,6 +129,11 @@ namespace enigma
          * developers to start enigma in test configuration).
          */
         std::string prefPath;
+        
+        /**
+         * the path to the documentation. 
+         */
+        std::string docPath;
         
         /**
          * the path to the gettext l10n data. 
@@ -207,12 +215,15 @@ namespace enigma
         DOMErrorReporter *domSerErrorHandler;
         bool errorInit;
         bool isMakePreviews;
+        video::VideoModes selectedVideoMode;
+        bool bossKeyPressed;
 
     private:
         void initSysDatapaths(const std::string &prefFilename);
         void initXerces();
         void initUserDatapaths();
         void updateMac1_00();
+        double enigmaVersion;
         std::string systemAppDataPath;    // dir path to the apps data
         std::string systemCmdDataPath;    // commandline override of systemAppDataPath
         std::string userStdPath;          // standard user data path
@@ -220,8 +231,6 @@ namespace enigma
         
         void init_i18n();
     };
-
-#define APP enigma::Application::get_instance()
 
     extern Application app;
 
@@ -231,13 +240,14 @@ namespace enigma
     /**
      * Flag to use in expensive asserts as first operand in a logical or
      * statement to allow the assertion to be blocked in favour of speed.
-     * F.e. <code>ASSERT(noAssert || long_lasting_check(), XLevelRuntime, "");<code>
+     * F.e. <code>ASSERT(noAssert || long_lasting_check(), XLevelRuntime, "");</code>
      */
     extern bool noAssert;
 
     //---------- Command line options ----------//
     extern bool   WizardMode;
     extern bool   Nograb;
+    extern bool   Robinson;
 }
 
 #endif

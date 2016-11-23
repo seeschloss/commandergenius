@@ -1,0 +1,126 @@
+//==================================================  -*- Mode: C++ -*-
+// Copyright (C) 2002,2003,2004 Daniel Heck
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+//
+// $Id: enigma-lua.pkg,v 1.25 2004/03/15 20:15:36 dheck Exp $
+//======================================================================
+
+
+/* -------------------- enigma.cc -------------------- */
+
+$#include "server.hh"
+$#include "world.hh"
+$#include "resource_cache.hh"
+$#include "ecl_font.hh"
+$#include "lev/PersistentIndex.hh"
+
+$using namespace enigma;
+$using ecl::Surface;
+$using ecl::Font;
+$using std::string;
+
+module enigma
+{
+    enum Direction {NODIR, NORTH, EAST, SOUTH, WEST};
+
+    Surface *GetImage(const char *name);
+    Surface *GetImage(const char *name, const char *extension);
+    Surface *LoadImage(const char *name);
+    Surface *RegisterImage(const char *name, Surface *s);
+    Font    *GetFont(const char *name);
+
+    const char *date(const char *format); // format see 'man strftime'
+}
+
+/* -------------------- server.cc, lev/Index.cc -------------------- */
+
+$using namespace server;
+$using namespace lev;
+module enigma
+{
+    extern int    TwoPlayerGame;
+    extern int    SingleComputerGame;
+    extern int    ConserveLevel;
+    extern int    AllowTogglePlayer;
+    extern int    ShowMoves;
+    extern double Brittleness;
+    extern double SlopeForce;
+    extern double FlatForce;
+    extern double FrictionFactor;
+    extern double ElectricForce;
+    extern double BumperForce;
+    extern double MagnetForce;
+    extern double MagnetRange;
+    extern double WaterSinkSpeed;
+    extern double SwampSinkSpeed;
+    extern double WormholeForce;
+    extern double WormholeRange;
+    extern double HoleForce;
+    extern bool   CreatingPreview;
+
+    void AddLevelPack (const char *init_file, const char *name);
+    void AddZippedLevelPack (const char *zipfile);
+    void SetCompatibility(const char *version);
+}
+
+/* -------------------- world.cc, objects.cc -------------------- */
+
+$using namespace enigma;
+
+module world
+{
+    class Object;
+    class Floor : public Object {};
+    class Item : public Object {};
+    class Stone : public Object {};
+
+    Object *MakeObject(const char *kind);
+    Floor *MakeFloor(const char *kind);
+    Item *MakeItem(const char *kind);
+    Stone *MakeStone(const char *kind);
+
+    Object *GetNamedObject(const char *name);
+
+    void Resize(int w, int h);
+}
+
+/* -------------------- video.cc -------------------- */
+
+$#include "video.hh"
+$using namespace video;
+$using ecl::Screen;
+
+module video
+{
+    Screen *GetScreen();
+    void HideMouse();
+    void ShowMouse();
+}
+
+/* -------------------- sound.cc -------------------- */
+
+$#include "SoundEffectManager.hh"
+$using namespace sound;
+
+module sound
+{
+    // Note that EmitSound is defined in lua.cc, due to its object reference.
+    void DefineSoundEffect(string table, string name, string filename,
+                           double volume, bool loop, bool global, int priority,
+                           double damp_max, double damp_inc, double damp_mult,
+                           double damp_min, double damp_tick, string silence_string);
+    void SetActiveSoundSet(string table);
+}

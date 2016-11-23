@@ -14,32 +14,24 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- *
  */
 #ifndef ENIGMA_GAME_HH
 #define ENIGMA_GAME_HH
 
-#include "fwd.hh"
-#include "ecl_fwd.hh"
+#include "ecl_video.hh"
 #include "lev/Proxy.hh"
 
-namespace enigma_game
-{
-    using enigma_levels::LevelPack;
-    using enigma_levels::Level;
+namespace enigma {
+namespace game {
 
-    void ResetGameTimer();
+void ResetGameTimer();
 
-    void StartGame();
+void StartGame();
 
-    /*! Draw a level preview into video::BackBuffer().  Return true if
-      successful. */
-    bool DrawLevelPreview (ecl::GC &, enigma::lev::Proxy *levelProxy);
+// Draw a level preview into video::BackBuffer(). Return true if successful.
+bool DrawLevelPreview(ecl::GC &, enigma::lev::Proxy *levelProxy);
 
-}
+}  // namespace game
+}  // namespace enigma
 
-namespace enigma
-{
-    namespace game = enigma_game;
-}
 #endif

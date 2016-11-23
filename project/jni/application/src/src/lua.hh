@@ -21,7 +21,9 @@
 
 #include "enigma.hh"
 #include "ecl_geom.hh"
-#include "objects_decl.hh"
+#include "file.hh"
+#include "GridObject.hh"
+#include <map>
 
 #ifdef CXXLUA
 struct lua_State;
@@ -30,9 +32,7 @@ extern "C" struct lua_State;
 #endif
 
 
-namespace lua
-{
-    using namespace enigma;
+namespace enigma { namespace lua {
 
 /* -------------------- Data structures -------------------- */
 
@@ -40,14 +40,17 @@ namespace lua
         int (*func) (lua_State *); // lua_CFunction func;
         const char *name;
     };
-
+    
+    
+    typedef std::map<std::string, int (*) (lua_State *)> MethodMap;
+    
     enum Error {
         NO_LUAERROR = 0,
         ERRRUN,
-	ERRFILE,
-	ERRSYNTAX,
-	ERRMEM,
-	ERRERR
+        ERRFILE,
+        ERRSYNTAX,
+        ERRMEM,
+        ERRERR
     };
 
 /* -------------------- Lua states for Enigma -------------------- */
@@ -62,7 +65,7 @@ namespace lua
     lua_State *LevelState();
 
     /*! Initialize the ingame Lua state. */
-    lua_State *InitLevel();
+    lua_State *InitLevel(int api);
 
     /*! Close the ingame Lua state. */
     void ShutdownLevel();
@@ -74,6 +77,10 @@ namespace lua
 
 /* -------------------- Helper routines -------------------- */
 
+    void RegisterLuaType(lua_State *L, std::string registryKey, CFunction *ops,
+        CFunction *methods, MethodMap &methodMap);
+
+
     /*! Register the C functions in `funcs'.  The end of the array is
       denoted by an entry with func==0. */
     void RegisterFuncs (lua_State *L, CFunction funcs[]);
@@ -81,13 +88,15 @@ namespace lua
     /*! Set the value of entry `name' in the global table `tablename'. */
     void SetTableVar (lua_State *L, const char *tablename, const char *name, double value);
 
+    bool IsFunc(lua_State *L, const char *funcname);
+    
     /*! Call a Lua function with one argument.  This is mainly used
       for callbacks during the game. */
-    Error CallFunc(lua_State *L, const char *funcname, const enigma::Value& arg, world::Object *obj);
-
-    /*! Call a Lua function with a (large) byte vector as the sole
-      argument.  Currently only used for loading XML levels. */
-    Error CallFunc (lua_State *L, const char *funcname, const ByteVec &arg);
+    Error CallFunc(lua_State *L, std::string funcpath, const enigma::Value& arg, Object *obj, bool expectFunction = true);
+    
+    std::string NewMessageName(lua_State *L, const Object *obj, const std::string &message);
+    
+    void SetDefaultFloor(lua_State *L, int x, int y);
 
     /**
      * Run a Lua script using a given absolute path.
@@ -101,22 +110,23 @@ namespace lua
     Error DoSysFile (lua_State *L, const std::string & filename);
 
     /*! Find a Lua script in given filesystem using enigma::FindFile and run it. */
-    Error DoGeneralFile(lua_State *L, GameFS * fs, const string &filename);
+    Error DoGeneralFile(lua_State *L, GameFS * fs, const std::string &filename);
 
     /*! Run the Lua code contained in `luacode'. */
     Error Dobuffer (lua_State *L, const ByteVec &luacode);
 
     /*! Try to run given file on given filesystem.  If something
       fails, provide generic error message and exit enigma.*/
-    void CheckedDoFile (lua_State *L, GameFS * fs, const string &filename);
+    void CheckedDoFile (lua_State *L, GameFS * fs, const std::string &filename);
 
     /*! Return the text of the last error message. */
-    std::string LastError (lua_State *L);
+    std::string LastError(lua_State *L);
 
 
     Error DoSubfolderfile(lua_State *L, 
                         const std::string & basefolder, 
                         const std::string & filename);
-}
+
+}} // namespace enigma::lua
 #endif
 

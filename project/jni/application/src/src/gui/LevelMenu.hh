@@ -35,7 +35,7 @@ namespace enigma { namespace gui {
         // Rotate through levels and packs
         void next_levelpack();
         void previous_levelpack();
-        void show_text(const string& text);
+        void show_text(const std::string& text);
         bool isMainQuit();
 
     private:
@@ -57,23 +57,20 @@ namespace enigma { namespace gui {
         // Variables.
 
 
-#ifndef ANDROID
         Widget *pgup, *pgdown, *start, *end;
-#endif
-
-        Widget      *but_advancemode;      // Next unsolved level button
+        Widget      *but_advancemode;   // Next unsolved level button
         Widget      *but_next;
         Widget      *but_back;          // "Back" button
-        Widget      *but_difficulty;        // "Difficulty" button
+        Widget      *but_difficulty;    // "Difficulty" button
         TextButton  *but_levelpack;     // "Levelpack" button
         HList       *hl_info_stat;
         Label       *lbl_lpinfo;        // Levelpack information
-        Label       *lbl_statistics;        // percentage solved
+        Label       *lbl_statistics;    // percentage solved
         Label       *lbl_levelname;
         Label       *lbl_levelinfo;
         LevelWidget *levelwidget;
-        string       shown_text; // info text (disappears automatically)
-        double       shown_text_ttl; // rest duration for shown_text
+        std::string  shown_text;        // info text (disappears automatically)
+        double       shown_text_ttl;    // rest duration for shown_text
         bool         main_quit;
     };
 
@@ -94,6 +91,7 @@ namespace enigma { namespace gui {
         void on_action(Widget *);
     public:
         AdvanceModeButton();
+        virtual void draw(ecl::GC &gc, const ecl::Rect &r);
     private:
         void update();
     };

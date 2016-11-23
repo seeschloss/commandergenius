@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2002,2003,2004 Daniel Heck
+ * Copyright (C) 2006,2007,2008,2009 Ronald Lamprecht
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,17 +20,17 @@
 #ifndef FILE_HH_INCLUDED
 #define FILE_HH_INCLUDED
 
+#include "ecl_error.hh"
+
 #include <iosfwd>
 #include <vector>
 #include <list>
 #include <memory>
-#include "ecl_error.hh"
 
 namespace enigma
 {
     typedef std::vector<char> ByteVec;
     typedef std::string FileName;
-    using std::string;
 
     enum FSType {
         FS_DIRECTORY,
@@ -40,8 +41,8 @@ namespace enigma
         FSType      type;
         std::string location;
 
-        FSEntry (FSType type_, const std::string &location_)
-        : type (type_), location (location_)
+        FSEntry (FSType type_, std::string location_)
+        : type (type_), location (std::move(location_))
         {}
     };
 
@@ -60,39 +61,6 @@ namespace enigma
         DirIter();
     };
 
-    /* -------------------- FileHandles --------------------*/
-// 
-//     class FileHandle {
-//     public:
-//         virtual ~FileHandle() {}
-// 
-//         // FileHandle interface.
-//         virtual bool   exists() const = 0;
-//         virtual void   read (ByteVec &buffer) = 0;
-//     };
-// 
-//     class FileHandle_Dir : public FileHandle {
-//         std::string m_name;
-//         std::string m_path;
-//         bool m_exists;          // File exists
-// 
-//     public:
-//         FileHandle_Dir (const std::string &name);
-// 
-//         // FileHandle interface.
-//         bool   exists() const;
-//         void   read (ByteVec &buffer);
-//     };
-// 
-//     class FileHandle_Zip : public FileHandle {
-//     public:
-//         FileHandle_Zip();
-// 
-//         // FileHandle interface.
-//         bool   exists() const;
-//         void   read (ByteVec &buffer);
-//     };
-    
     /**
      * A GameFS is a list of directories that are searched when
      * Enigma tries to find a data file (for example a png image). The
@@ -116,11 +84,11 @@ namespace enigma
 
         void clear() { entries.clear(); }
                 
-        void append_dir (const string &path);
-        void prepend_dir (const string &path);
+        void append_dir (const std::string &path);
+        void prepend_dir (const std::string &path);
 
-        void prepend_zip (const string &filename);
-        void setDataPath (const string &p);
+        void prepend_zip (const std::string &filename);
+        void setDataPath (const std::string &p);
         std::string getDataPath();
         std::vector<std::string> getPaths();
 
@@ -131,7 +99,7 @@ namespace enigma
          * @param dest     the expanded full path of the first occurence.
          * @return  has a file been found.
          */
-        bool findFile(const string &filename, string &dest) const;
+        bool findFile(const std::string &filename, std::string &dest) const;
                 
         /**
          * Search first occurence of a file on the GameFS. The file can be
@@ -145,11 +113,9 @@ namespace enigma
          *                 the file is zipped
          * @return  has a file been found.
          */
-        bool findFile(const string &filename, string &dest, 
-                std::auto_ptr<std::istream> &isptr) const;
+        bool findFile(const std::string &filename, std::string &dest, 
+                std::unique_ptr<std::istream> &isptr) const;
                 
-//      FileHandle *findFile (const FileName &);
-
         /**
          * Search first occurence of a file on the GameFS. The file can be
          * a path component like "levels/index.lua". If the file can not be
@@ -158,7 +124,7 @@ namespace enigma
          * @param filename the searched filename
          * @return  the expanded full path of the first occurence or ""
          */
-        std::string findFile(const string &filename);
+        std::string findFile(const std::string &filename);
         
         /**
          * Lists the paths of all files with a given name that reside in
@@ -170,8 +136,8 @@ namespace enigma
          * @param filename  the searched filename, f.e. "index.lua"
          * @return  a list of fully expanded paths to matching files
          */
-        std::list <string> findSubfolderFiles (const string &folder,
-                                       const string &filename) const;
+        std::list <std::string> findSubfolderFiles (const std::string &folder,
+                const std::string &filename) const;
                 
         /** Find an image file named `f' in the resolution-dependent
          * graphics directories "gfx??" or in "gfx" and store the
@@ -185,15 +151,19 @@ namespace enigma
     };
 
 /* -------------------- Helper functions -------------------- */
-
+    
+    bool InitCurl();
+    void ShutdownCurl();
+    void Downloadfile(std::string url, ByteVec &dst);
+    
     /*! Load a complete file/input stream `is' into `dst'.  */
     std::istream &Readfile (std::istream &is, ByteVec &dst, int blocksize=512);
     bool Copyfile(std::string fromPath, std::string toPath);
     
     // banned code to file_zip.cc due to macro clashes
     bool findInZip(std::string zipPath, std::string zippedFilename1,
-        std::string zippedFilename2, string &dest, 
-        std::auto_ptr<std::istream> &isresult);
+            std::string zippedFilename2, std::string &dest, 
+        std::unique_ptr<std::istream> &isresult);
     
     bool writeToZip(std::ostream &zipStream, std::string filename, unsigned size, std::istream &contents);
     bool readFromZipStream(std::istream &zipFile, std::ostream &contents);

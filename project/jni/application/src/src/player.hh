@@ -27,75 +27,76 @@
  * (currently always 1 or 2).
  */
 
-#include "objects.hh"
+#include "items.hh"
+#include "actors.hh"
 
-namespace enigma
-{
-    class Inventory;
+namespace enigma {
+class Inventory;
 
-    namespace player {
+namespace player {
 
-        /*! Start a new game for two virtual players. */
-        void NewGame(bool isRestart);
+/*! Start a new game for two virtual players. */
+void NewGame();
 
-        /*! This is called whenever a new level is reached in a running
-          game.  The inventories of all players are cleaned up, i.e., all
-          items except for extra lifes are removed. */
-        void PrepareLevel();
+/*! This is called whenever a new level is reached in a running
+  game.  The inventories of all players are cleaned up, i.e., all
+  items except for extra lifes are removed. */
+void PrepareLevel();
 
-        /*! Add a yinyang item to all players' inventories. */
-        void AddYinYang ();
+/*! Add a yinyang item to all players' inventories. */
+void AddYinYang();
 
-        /*! Called after the loading a level but before starting the
-          game.  It initializes the inventory. */
-        void LevelLoaded(bool isRestart);
+/*! Called after the loading a level but before starting the
+  game.  It initializes the inventory. */
+void LevelLoaded(bool isRestart);
 
-        /*! Called as soon as the current level is finished; it removes
-          the actors of all players from the level. */
-        void LevelFinished();
+/*! Called as soon as the current level is finished; it removes
+  the actors of all players from the level. */
+void LevelFinished(int stage);
 
-        /* This function is only used by the YinYang items to exchange the
-           two players. */
-        void SwapPlayers();
+/* This function is only used by the YinYang items to exchange the
+   two players. */
+void SwapPlayers();
 
-        void RedrawInventory();
-        void RedrawInventory(Inventory *inv);
+void RedrawInventory();
+void RedrawInventory(Inventory *inv);
 
-        // set/remove respawn positions for all black or all white actors
-        // (used when it-flagwhite/black is dropped)
-        void SetRespawnPositions(enigma::GridPos pos, bool black);
-        void RemoveRespawnPositions(bool black);
+// set/remove respawn positions for all black or all white actors
+// (used when it-flagwhite/black is dropped)
+void SetRespawnPositions(enigma::GridPos pos, Value color);
+void RemoveRespawnPositions(Value color);
 
-        int      CurrentPlayer();
-        void     SetCurrentPlayer(unsigned iplayer);
-        unsigned NumberOfRealPlayers();
+int CurrentPlayer();
+void SetCurrentPlayer(unsigned iplayer);
+unsigned NumberOfRealPlayers();
 
+Inventory *MayPickup(Actor *a, Item *it, bool allowFlying = false);
+Inventory *GetInventory(int iplayer);
+Inventory *GetInventory(Actor *a);
+bool WieldedItemIs(Actor *a, const std::string &kind);
 
-        Inventory *MayPickup(Actor *a, Item *it);
-        Inventory *GetInventory(int iplayer);
-        Inventory *GetInventory(Actor *a);
-        bool       WieldedItemIs(Actor *a, const std::string &kind);
+void Suicide();
 
-        void Suicide();
+void AddActor(unsigned iplayer, Actor *a);
+void AddUnassignedActor(Actor *a);  // actors not assigned to a player
+bool HasActor(unsigned iplayer, Actor *a);
+Actor *ReplaceActor(unsigned iplayer, Actor *old, Actor *a);
+Actor *GetMainActor(unsigned iplayer);
 
-        void AddActor (unsigned iplayer, Actor *a);
-        void AddUnassignedActor (Actor *a);  // actors not assigned to a player
-        bool HasActor(unsigned iplayer, Actor *a);
-        Actor *ReplaceActor (unsigned iplayer, Actor *old, Actor *a);
-        Actor *GetMainActor (unsigned iplayer);
+bool AllActorsDead();
 
-        bool AllActorsDead();
+void InhibitPickup(bool yesno);
+void PickupItem(Actor *a, enigma::GridPos p);
+bool PickupAsItem(Actor *a, GridObject *obj, std::string kind);
+void RotateInventory(int dir = 1);
 
-        void InhibitPickup (bool yesno);
-        void PickupItem (Actor *a, enigma::GridPos p);
-        void PickupStoneAsItem (Actor *a, enigma::GridPos p);
-        void RotateInventory (int dir=1);
+void ActivateFirstItem();
+ItemAction ActivateItem(Item *it);
 
-        void ActivateFirstItem();
-        world::ItemAction ActivateItem (Item *it);
+void Tick(double dtime);
+void CheckDeadActors();
+void PlayerShutdown();
 
-        void Tick (double dtime);
-
-    } // namespace player
-} // namespace enigma
+}  // namespace player
+}  // namespace enigma
 #endif

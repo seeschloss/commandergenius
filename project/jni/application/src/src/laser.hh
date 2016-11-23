@@ -22,98 +22,67 @@
 /* This file contains the declarations for (almost) everything that
    has to do with lasers. */
 
-#include "objects.hh"
+#include "GridObject.hh"
+#include "stones.hh"
+#include "items.hh"
+#include <list>
 
-namespace world
-{
-    /**
-     * This interface must be implemented by all items and stones that
-     * are capable of emitting light.
-     */
-    class LaserEmitter {
+namespace enigma {
+
+/* -------------------- LaserBeam -------------------- */
+
+    class LaserBeam : public Item {
     public:
-	virtual ~LaserEmitter() {}
-	virtual DirectionBits emission_directions() const = 0;
-    };
+        static void emit_from(GridPos p, Direction d);
+        static void kill_all();
+        static void all_emitted();
+        static void prepareLevel();
 
-/* -------------------- PhotoCell -------------------- */
+        // Object interface
+        virtual std::string getClass() const override;
+        virtual Value message(const Message &m) override;
 
-    /**
-     * PhotoCells are objects (not necessarily stones) that are
-     * sensitive to laser light.  Whenever the game engine
-     * recalculates the laser beams, instances of this class are
-     * notified about the beginning and the end of a recalculation.
-     */
-    class PhotoCell {
-    public:
-        virtual ~PhotoCell();
+        // GridObject interface
+        DirectionBits emissionDirections() const override { return (DirectionBits)(objFlags & 15); }
+        static ItemTraits traits;
 
-        // ---------- Static functions ----------
-        static void notify_start();
-        static void notify_finish();
-
-        // ---------- PhotoCell interface ----------
-        virtual void on_recalc_start() = 0;
-        virtual void on_recalc_finish() = 0;
-    protected:
-
-        /*! Derived classes must call this method to register
-          themselves for the on_recalc_start() and on_recalc_finish()
-          events. */
-        void photo_activate();
-
-        /*! Derived classes must call this method to unregister
-          themselves.  It is automatically called by ~PhotoCell(), but
-          objects may have to call it explicitly if they are not
-          interested in PhotoCell events. */
-        void photo_deactivate();
+        const ItemTraits &get_traits() const override {
+            return traits;
+        }
     private:
-        static std::vector<void*> instances;
+        LaserBeam(Direction dir) {
+            objFlags |= to_bits(dir);
+        }
+
+        // Item interface.
+        void processLight(Direction dir) override;
+        void on_creation (GridPos p) override;
+        virtual void on_removal(GridPos p) override;
+        void init_model() override;
+        bool actor_hit(Actor *actor) override;
+
+        Item *clone() override {
+            // new LaserBeams may only created inside `emit_from'.
+//            assert(0);
+            return nullptr;
+        }
+        void dispose() override;
+
+        // Variables
+        
+        static std::list<LaserBeam *> beamList;
     };
-
-/* -------------------- PhotoStone -------------------- */
-
-    /*! Most stones are indifferent to laser beams: They either block
-      the light completely or they let it pass, but they do not change
-      their internal state when they are hit by light.  Certain kinds
-      of stones need to be notified whenever the `light' goes on or off
-      -- these can be derived from this class.
-    
-      The most prominent example are Oxyd stones -- they open when
-      they are hit by a laser beam.  See the remarks at the beginning
-      of this file to understand why overriding `on_laserhit' is not
-      sufficient for a proper implementation of Oxyd stones.
-    */
-
-    class PhotoStone : public Stone, public PhotoCell {
-    protected:
-        PhotoStone (const char *kind);
-
-    private:
-        bool illuminated;
-
-        // PhotoCell interface
-        void on_recalc_start();
-        void on_recalc_finish();
-
-        // PhotoStone interface
-        virtual void notify_laseron() = 0;
-        virtual void notify_laseroff() = 0;
-    };
-}
 
 /* -------------------- Functions -------------------- */
-namespace lasers
-{
-    void Init();
+    void InitLasers();
 
     /*! This function must be called at the end of each tick; it
       recalculates the laser beams if necessary. */
-    void RecalcLightNow();
+    void PerformRecalcLight(bool isInit);
 
     /*! Force all light beams to be recalculated at the end of the
       current tick.  So far, this is only used by laser stones and in
-      world::InitWorld().  */
+      WorldInitLevel().  */
     void RecalcLight();
 
     /*! If position `p' is inside a laser beam, force all laser beams
@@ -126,5 +95,7 @@ namespace lasers
     /*! Return true iff a stone or an item at position `p' it hit by
       light coming from direction `dir'. */
     bool LightFrom (enigma::GridPos p, enigma::Direction dir);
-}
+
+} // namespace enigma
+
 #endif
