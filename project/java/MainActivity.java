@@ -117,7 +117,7 @@ public class MainActivity extends Activity
 
 		Log.i("SDL", "libSDL: Creating startup screen");
 		_layout = new LinearLayout(this);
-		_layout.setOrientation(LinearLayout.VERTICAL);
+		_layout.setOrientation(LinearLayout.HORIZONTAL);
 		_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
 		_layout2 = new LinearLayout(this);
 		_layout2.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -141,7 +141,6 @@ public class MainActivity extends Activity
 						setUpStatusLabel();
 						Log.i("SDL", "libSDL: User clicked change phone config button");
 						loadedLibraries.acquireUninterruptibly();
-						setScreenOrientation();
 						SettingsMenu.showConfig(p, false);
 					}
 			};
@@ -201,7 +200,6 @@ public class MainActivity extends Activity
 						public void run()
 						{
 							Settings.Load(Parent);
-							setScreenOrientation();
 							loaded.release();
 							loadedLibraries.release();
 							if( _btn != null )
@@ -313,8 +311,6 @@ public class MainActivity extends Activity
 		{
 			public void run()
 			{
-				if( Globals.AutoDetectOrientation )
-					Globals.HorizontalOrientation = isCurrentOrientationHorizontal();
 				while( isCurrentOrientationHorizontal() != Globals.HorizontalOrientation ||
 						((KeyguardManager)getSystemService(Context.KEYGUARD_SERVICE)).inKeyguardRestrictedInputMode() )
 				{
@@ -1581,20 +1577,7 @@ public class MainActivity extends Activity
 
 	void setScreenOrientation()
 	{
-		if( !Globals.AutoDetectOrientation && getIntent().getBooleanExtra(RestartMainActivity.ACTIVITY_AUTODETECT_SCREEN_ORIENTATION, false) )
-			Globals.AutoDetectOrientation = true;
-		if( Globals.AutoDetectOrientation )
-		{
-			if( android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2 )
-				setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_USER);
-			else
-				setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
-			return;
-		}
-		if( android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD )
-			setRequestedOrientation(Globals.HorizontalOrientation ? ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
-		else
-			setRequestedOrientation(Globals.HorizontalOrientation ? ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		setRequestedOrientation(Globals.HorizontalOrientation ? ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 	}
 
 	@Override

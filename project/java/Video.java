@@ -705,7 +705,7 @@ class DemoRenderer extends GLSurfaceView_SDL.Renderer
 		Settings.nativeSetEnv( "DISPLAY_RESOLUTION_HEIGHT", String.valueOf(Math.min(mWidth, mHeight)) ); // In Kitkat with immersive mode, getWindowManager().getDefaultDisplay().getMetrics() return inaccurate height
 
 		accelerometer = new AccelerometerReader(context);
-		if( Globals.MoveMouseWithGyroscope )
+		if( Globals.MoveMouseWithGyroscope || Globals.AppUsesGyroscope )
 			startAccelerometerGyroscope(1);
 		// Tweak video thread priority, if user selected big audio buffer
 		if( Globals.AudioBufferConfig >= 2 )
@@ -751,15 +751,6 @@ class DemoRenderer extends GLSurfaceView_SDL.Renderer
 			try {
 				Thread.sleep(50); // Give some time to the keyboard input thread
 			} catch(Exception e) { };
-		}
-
-		// We will not receive onConfigurationChanged() inside MainActivity with SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-		// so we need to create a hacky frame counter to update screen orientation, because this call takes up some time
-		mOrientationFrameHackyCounter++;
-		if( mOrientationFrameHackyCounter > 100 )
-		{
-			mOrientationFrameHackyCounter = 0;
-			context.updateScreenOrientation();
 		}
 
 		return 1;
@@ -982,7 +973,6 @@ class DemoRenderer extends GLSurfaceView_SDL.Renderer
 	private boolean mFirstTimeStart = true;
 	public int mWidth = 0;
 	public int mHeight = 0;
-	int mOrientationFrameHackyCounter = 0;
 
 	public static final boolean mRatelimitTouchEvents = true; //(Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO);
 }
