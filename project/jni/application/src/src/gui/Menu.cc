@@ -30,12 +30,38 @@
 #include <algorithm>
 #include <iostream>
 
+#ifdef ANDROID
+#include <SDL/SDL_android.h>
+#include <SDL/SDL_mixer.h>
+#endif
+
 using namespace ecl;
 using namespace std;
 
 #define SCREEN ecl::Screen::get_instance()
 
 namespace enigma { namespace gui {
+#ifdef ANDROID
+static bool playingMenuMusic = false;
+
+static void appPutToBackgroundCallbackMenu(void) {
+    playingMenuMusic = false;
+
+    if(Mix_PlayingMusic()) {
+        playingMenuMusic = true;
+        Mix_PauseMusic();
+    }
+}
+
+static void appRestoredCallbackMenu(void) {
+    if(playingMenuMusic) {
+        playingMenuMusic = false;
+        Mix_ResumeMusic();
+    }
+}
+
+#endif
+
     /* -------------------- Menu -------------------- */
     
     Menu::Menu()
@@ -78,6 +104,11 @@ namespace enigma { namespace gui {
         Uint32 enterTickTime = SDL_GetTicks(); // protection against ESC D.o.S. attacks
         while (SDL_PollEvent(&e)) {}  // clear event queue
         draw_all();
+#ifdef ANDROID
+        int repaintCounter = 0;
+        playingMenuMusic = false;
+        SDL_ANDROID_SetApplicationPutToBackgroundCallback(appPutToBackgroundCallbackMenu, appRestoredCallbackMenu);
+#endif
         while (!(quitp || abortp)) {
             SCREEN->flush_updates();
             while (SDL_PollEvent(&e)) {
@@ -89,6 +120,12 @@ namespace enigma { namespace gui {
             if(key_focus_widget && (key_focus_widget != active_widget)) key_focus_widget->tick(0.01);
             tick(0.01);
             sound::MusicTick(0.01);
+#ifdef ANDROID
+// repaint, needed if the app was restored
+            if(repaintCounter++ > 20) {
+                invalidate_all(); repaintCounter = 0;
+            }
+#endif
             refresh();
         }
         sound::EmitSoundEvent ("menuexit");

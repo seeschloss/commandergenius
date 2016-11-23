@@ -613,9 +613,11 @@ Button::Button()
 
 void Button::activate() 
 {
+#ifndef ANDROID
     sound::EmitSoundEvent ("menuswitch");
     m_activep = true;
     invalidate();
+#endif
 }
 
 void Button::deactivate() {

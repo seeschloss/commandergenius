@@ -172,6 +172,11 @@ private:
     std::string m_user_input;
     std::string m_error_message;
 
+#ifdef ANDROID
+    Sint16 m_joy_x0;
+    Sint16 m_joy_y0;
+#endif
+
     std::unique_ptr<video::TransitionEffect> m_effect;
     ENetHost *m_network_host;
     ENetPeer *m_server;

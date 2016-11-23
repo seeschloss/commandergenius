@@ -129,6 +129,7 @@ namespace enigma { namespace gui {
         this->add (hl, Rect(0, vminfo.height - param[vtt].vsize_button - param[vtt].vmargin_bottom,
                 vminfo.width, param[vtt].vsize_button));
             
+#ifndef ANDROID
         // Add navigation buttons
         pgup     = new ImageButton("ic-up", "ic-up1", this);
         pgdown   = new ImageButton("ic-down", "ic-down1", this);
@@ -145,6 +146,7 @@ namespace enigma { namespace gui {
         add (start, r);
         r.y += param[vtt].vsize_nav + param[vtt].vgap_nav_nav;
         add (end, r);
+#endif
     
         // Information area
         hl = new HList;
@@ -277,6 +279,7 @@ namespace enigma { namespace gui {
         } else if (w == but_back) {
             main_quit = true;
             Menu::quit();
+#ifndef ANDROID
         } else if (w == pgup) {
             levelwidget->page_up();
         } else if (w == pgdown) {
@@ -285,6 +288,7 @@ namespace enigma { namespace gui {
             levelwidget->start();
         } else if (w == end) {
             levelwidget->end();
+#endif
         } else if (w == but_next) {
             next_unsolved(); 
             // if we jump to first level the view is not updated to levelwidget->start()

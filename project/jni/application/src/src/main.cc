@@ -381,6 +381,9 @@ void Application::init(int argc, char **argv)
 //    SDL_putenv("SDL_VIDEODRIVER=directx");  //needed for SDL 1.2.12 that crashes on SetGamma on default GDI driver
 #endif
     int sdl_flags = SDL_INIT_VIDEO;
+#ifdef ANDROID
+    sdl_flags |= SDL_INIT_JOYSTICK;
+#endif
     if (enigma::WizardMode)
         sdl_flags |= SDL_INIT_NOPARACHUTE;
     if (SDL_Init(sdl_flags) < 0) {
@@ -451,9 +454,11 @@ void Application::init(int argc, char **argv)
                     INDEX_EVERY_GROUP, ap.levelnames, INDEX_STARTUP_PACK_LOCATION));
             lev::Index::setCurrentIndex(INDEX_STARTUP_PACK_NAME);
         }
+#ifndef ANDROID
         std::vector<std::string> emptyList;
         lev::Index::registerIndex(new lev::VolatileIndex(INDEX_SEARCH_PACK_NAME,
                     INDEX_DEFAULT_GROUP, emptyList, INDEX_SEARCH_PACK_LOCATION));
+#endif
     }
 
     lev::Proxy::countLevels();

@@ -222,6 +222,10 @@ namespace enigma { namespace gui {
         if (img == NULL)
             return false;
    
+#ifdef ANDROID
+        blit (gc, x-4, y-4, displayEditBorder ? img_editborder : img_border);
+        blit (gc, x, y, img);
+#else
         if (selected) {
             blit (gc, x - borderWidth, y - borderWidth, displayEditBorder ? img_editborder : img_border);
             blit (gc, x, y, img);
@@ -230,7 +234,7 @@ namespace enigma { namespace gui {
             blit (gc, x, y, img);
             img->set_alpha(255);
         }
-
+#endif
         // Shade unavailable levels
         if (locked)
             blit (gc, x, y, img_unavailable);
