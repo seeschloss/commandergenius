@@ -645,6 +645,7 @@ void Client::tick (double dtime)
 
     case cls_preparing_game: {
         #ifdef ANDROID
+        SDL_JoystickEventState(SDL_ENABLE);
         joy = SDL_JoystickOpen(0);
         SDL_JoystickUpdate();
         sdl::FlushEvents();
@@ -673,11 +674,13 @@ void Client::tick (double dtime)
     case cls_game:
         #ifdef ANDROID
         // joystick/accelerometer control
-        joy = SDL_JoystickOpen(0);
+        joy = SDL_JoystickOpen(1);
         SDL_JoystickUpdate();
         if(joy != NULL) {
-            joy_x = SDL_JoystickGetAxis(joy,0) - m_joy_x0;
-            joy_y = SDL_JoystickGetAxis(joy,1) - m_joy_y0;
+            // Use not only straight orientation data (0-1) but also acceleration data (2-3)
+            joy_x = SDL_JoystickGetAxis(joy,0) + SDL_JoystickGetAxis(joy,2) - m_joy_x0;
+            joy_y = SDL_JoystickGetAxis(joy,1) - SDL_JoystickGetAxis(joy,3) - m_joy_y0;
+
             server::Msg_MouseForce(options::GetDouble("MouseSpeed") * -dtime/3000.0 *
                  V2 (-joy_x*sqrt(abs(joy_x)), -joy_y*sqrt(abs(joy_y))));   // use joy**1.5 to allow more flexible (non-linear) control 
         }
