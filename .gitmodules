@@ -1,22 +1,7 @@
-[submodule "project/jni/application/frogatto"]
-	path = project/jni/application/frogatto
-	url = git@github.com:frogatto/frogatto.git
-[submodule "project/jni/application/ufoai/ufoai"]
-	path = project/jni/application/ufoai/ufoai
-	url = git://ufoai.git.sourceforge.net/gitroot/ufoai/ufoai
-[submodule "project/jni/application/xserver-gimp/xserver"]
-	path = project/jni/application/xserver-gimp/xserver
-	url = git@github.com:pelya/xserver.git
 [submodule "project/jni/iconv/src"]
 	path = project/jni/iconv/src
 	url = git@github.com:pelya/libiconv-libicu-android.git
-[submodule "project/jni/application/xserver-debian/xserver"]
-	path = project/jni/application/xserver-debian/xserver
-	url = git@github.com:pelya/xserver.git
 [submodule "project/jni/openssl/openssl/jni"]
 	path = project/jni/openssl/openssl/jni
 	url = https://android.googlesource.com/platform/external/openssl
 	branch = lollipop-mr1-dev
-[submodule "project/jni/boringssl/boringssl/jni"]
-	path = project/jni/boringssl/boringssl/jni
-	url = https://android.googlesource.com/platform/external/boringssl
