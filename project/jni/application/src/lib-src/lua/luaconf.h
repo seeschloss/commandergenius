@@ -8,7 +8,6 @@
 #ifndef lconfig_h
 #define lconfig_h
 
-#include <stdbool.h>
 #include <limits.h>
 #include <stddef.h>
 

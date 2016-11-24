@@ -4,7 +4,6 @@
 * external definitions
 */
 
-#include <stdbool.h>
 
 extern bool lua_evaluate_assert;
 
