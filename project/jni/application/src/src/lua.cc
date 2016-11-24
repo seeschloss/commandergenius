@@ -54,6 +54,11 @@ extern "C" {
 
 #include "nls.hh"
 
+#ifdef ANDROID
+#include <android/log.h>
+#define fprintf(f, ...) __android_log_print(ANDROID_LOG_INFO, "Enigma", __VA_ARGS__);
+#endif
+
 // Lua Registry keys of metatables for user objects
 #define LUA_ID_OBJECT    "_ENIGMAOBJECT"
 #define LUA_ID_POSITION  "_POSITION"

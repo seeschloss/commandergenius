@@ -85,6 +85,11 @@ XERCES_CPP_NAMESPACE_USE
 #undef LoadImage
 #endif
 
+#ifdef ANDROID
+#include <android/log.h>
+#define fprintf(f, ...) __android_log_print(ANDROID_LOG_INFO, "Enigma", __VA_ARGS__);
+#endif
+
 namespace
 {
     class Nulbuf : public std::streambuf {};

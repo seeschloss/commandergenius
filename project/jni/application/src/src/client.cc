@@ -215,7 +215,7 @@ void Client::handle_events() {
         case SDL_ACTIVEEVENT: {
 #ifdef ANDROID
             if (e.active.gain == 0)
-                show_menu();
+                show_menu(false);
 #else
             update_mouse_button_state();
             if (e.active.gain == 0 && !video::IsFullScreen())
@@ -680,7 +680,7 @@ void Client::tick(double dtime) {
             joy_y = SDL_JoystickGetAxis(joy,1) - SDL_JoystickGetAxis(joy,3) - m_joy_y0;
 
             server::Msg_MouseForce(options::GetDouble("MouseSpeed") * -dtime/3000.0 *
-                 V2 (-joy_x*sqrt(abs(joy_x)), -joy_y*sqrt(abs(joy_y))));   // use joy**1.5 to allow more flexible (non-linear) control 
+                 ecl::V2 (-joy_x*sqrt(abs(joy_x)), -joy_y*sqrt(abs(joy_y))));   // use joy**1.5 to allow more flexible (non-linear) control 
         }
 #endif
 

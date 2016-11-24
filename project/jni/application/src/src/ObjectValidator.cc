@@ -110,21 +110,21 @@ namespace enigma {
         DOMElement *baseElem;
         
         try{
-            baseElem = dynamic_cast<DOMElement *>(doc->getElementsByTagName(Utf8ToXML("attributes").x_str())->item(0));
+            baseElem = reinterpret_cast<DOMElement *>(doc->getElementsByTagName(Utf8ToXML("attributes").x_str())->item(0));
             elemList = baseElem->getElementsByTagName(Utf8ToXML("attr").x_str());
             for (int i = 0, l = elemList->getLength(); i < l; i++) {
-                scanAttributeElement(dynamic_cast<DOMElement *>(elemList->item(i)));
+                scanAttributeElement(reinterpret_cast<DOMElement *>(elemList->item(i)));
             }
             
-            baseElem = dynamic_cast<DOMElement *>(doc->getElementsByTagName(Utf8ToXML("messages").x_str())->item(0));
+            baseElem = reinterpret_cast<DOMElement *>(doc->getElementsByTagName(Utf8ToXML("messages").x_str())->item(0));
             elemList = baseElem->getElementsByTagName(Utf8ToXML("msg").x_str());
             for (int i = 0, l = elemList->getLength(); i < l; i++) {
-                scanMessageElement(dynamic_cast<DOMElement *>(elemList->item(i)));
+                scanMessageElement(reinterpret_cast<DOMElement *>(elemList->item(i)));
             }
             
             elemList = doc->getElementsByTagName(Utf8ToXML("object").x_str());
             for (int i = 0, l = elemList->getLength(); i < l; i++) {
-                scanObjectElement(dynamic_cast<DOMElement *>(elemList->item(i)));
+                scanObjectElement(reinterpret_cast<DOMElement *>(elemList->item(i)));
             }
         } catch (...) {
             errMessage = "Exception on parse of object declarations\n";
@@ -318,13 +318,13 @@ namespace enigma {
         
         elemList = objectElement->getElementsByTagName(Utf8ToXML("msg").x_str());
         for (int i = 0, l = elemList->getLength(); i < l; i++) {
-            DOMElement *msgElem = dynamic_cast<DOMElement *>(elemList->item(i));
+            DOMElement *msgElem = reinterpret_cast<DOMElement *>(elemList->item(i));
             kd->addMessage(XMLtoUtf8(msgElem->getAttribute(Utf8ToXML("name").x_str())).c_str());
         }
         
         elemList = objectElement->getElementsByTagName(Utf8ToXML("attr").x_str());
         for (int i = 0, l = elemList->getLength(); i < l; i++) {
-            DOMElement *attrElem = dynamic_cast<DOMElement *>(elemList->item(i));
+            DOMElement *attrElem = reinterpret_cast<DOMElement *>(elemList->item(i));
                         
             std::string name = XMLtoUtf8(attrElem->getAttribute(Utf8ToXML("name").x_str())).c_str();
             std::string typeName = XMLtoUtf8(attrElem->getAttribute(Utf8ToXML("type").x_str())).c_str();

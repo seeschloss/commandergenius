@@ -76,14 +76,14 @@ namespace enigma {
                 // update existing XML prefs from possibly newer template:
                 // use user prefs and copy new properties from template
                 doc = app.domParser->parseURI(app.prefPath.c_str());
-                propertiesElem = dynamic_cast<DOMElement *>(doc->getElementsByTagName(
+                propertiesElem = reinterpret_cast<DOMElement *>(doc->getElementsByTagName(
                         Utf8ToXML("properties").x_str())->item(0));
                 // The following algorithm is not optimized - O(n^2)!
                 DOMDocument * prefTemplate = app.domParser->parseURI(prefTemplatePath.c_str());
                 DOMNodeList * tmplPropList = prefTemplate->getElementsByTagName(
                         Utf8ToXML("property").x_str());
                 for (int i = 0, l = tmplPropList-> getLength(); i < l; i++) {
-                    DOMElement *tmplProperty = dynamic_cast<DOMElement *>(tmplPropList->item(i));
+                    DOMElement *tmplProperty = reinterpret_cast<DOMElement *>(tmplPropList->item(i));
                     const XMLCh * key = tmplProperty->getAttribute(Utf8ToXML("key").x_str());
                     DOMElement * lastUserProperty;
                     if ((key[0] != chUnderscore) && !hasProperty(key, &lastUserProperty)) {
@@ -95,7 +95,7 @@ namespace enigma {
                             Log << "Preferences: copy new Property failed!\n";
                         } else {
                             // insert it at the end of the existing user properties
-                            propertiesElem->appendChild(dynamic_cast<DOMElement *>(newProperty));
+                            propertiesElem->appendChild(reinterpret_cast<DOMElement *>(newProperty));
                         }
                     }
                 }
@@ -104,11 +104,11 @@ namespace enigma {
                 // update from LUA options to XML preferences:
                 // use the template, copy LUA option values and save it later as prefs
                 doc = app.domParser->parseURI(prefTemplatePath.c_str());
-                propertiesElem = dynamic_cast<DOMElement *>(doc->getElementsByTagName(
+                propertiesElem = reinterpret_cast<DOMElement *>(doc->getElementsByTagName(
                         Utf8ToXML("properties").x_str())->item(0));
                 DOMNodeList * propList = propertiesElem->getElementsByTagName(Utf8ToXML("property").x_str());
                 for (int i = 0, l = propList-> getLength(); i < l; i++) {
-                    DOMElement * property  = dynamic_cast<DOMElement *>(propList->item(i));
+                    DOMElement * property  = reinterpret_cast<DOMElement *>(propList->item(i));
                     const XMLCh * key = property->getAttribute(Utf8ToXML("key").x_str());
                     std::string optionValue;
                     if (options::HasOption(XMLtoLocal(key).c_str(), optionValue)) {
