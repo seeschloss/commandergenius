@@ -14,9 +14,10 @@ APPLICATION_SUBDIRS_BUILD_RECURSIVE := $(patsubst $(LOCAL_PATH)/%, %, $(APPLICAT
 APP_SUBDIRS := $(APPLICATION_SUBDIRS_BUILD_NONRECURSIVE) $(APPLICATION_SUBDIRS_BUILD_RECURSIVE)
 endif
 
-LOCAL_SRC_FILES := $(filter %.c %.cpp, $(APP_SUBDIRS))
-APP_SUBDIRS := $(filter-out %.c %.cpp, $(APP_SUBDIRS))
+LOCAL_SRC_FILES := $(filter %.c %.cpp %.cc, $(APP_SUBDIRS))
+APP_SUBDIRS := $(filter-out %.c %.cpp %.cc, $(APP_SUBDIRS))
 LOCAL_SRC_FILES += $(foreach F, $(APP_SUBDIRS), $(addprefix $(F)/,$(notdir $(wildcard $(LOCAL_PATH)/$(F)/*.cpp))))
+LOCAL_SRC_FILES += $(foreach F, $(APP_SUBDIRS), $(addprefix $(F)/,$(notdir $(wildcard $(LOCAL_PATH)/$(F)/*.cc))))
 LOCAL_SRC_FILES += $(foreach F, $(APP_SUBDIRS), $(addprefix $(F)/,$(notdir $(wildcard $(LOCAL_PATH)/$(F)/*.c))))
 LOCAL_SRC_FILES := $(filter-out $(addprefix $(APPDIR)/, $(APPLICATION_BUILD_EXCLUDE)), $(LOCAL_SRC_FILES))
 
