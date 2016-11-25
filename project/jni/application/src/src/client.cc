@@ -549,15 +549,6 @@ void Client::show_menu(bool isESC) {
     }
     video::HideMouse();
 
-#ifdef ANDROID
-    SDL_Joystick *joy = SDL_JoystickOpen(0);
-    SDL_JoystickUpdate();
-    if(joy != NULL) {
-        m_joy_x0 = SDL_JoystickGetAxis(joy,0);
-        m_joy_y0 = SDL_JoystickGetAxis(joy,1);
-    }
-#endif
-
     update_mouse_button_state();
     if (m_state == cls_game)
         display::RedrawAll(screen);
@@ -643,17 +634,6 @@ void Client::tick(double dtime) {
     case cls_idle: break;
 
     case cls_preparing_game: {
-#ifdef ANDROID
-         SDL_JoystickEventState(SDL_ENABLE);
-         joy = SDL_JoystickOpen(0);
-         SDL_JoystickUpdate();
-         sdl::FlushEvents();
-         if(joy != NULL) {
-             m_joy_x0 = SDL_JoystickGetAxis(joy,0);
-             m_joy_y0 = SDL_JoystickGetAxis(joy,1);
-         }
-#endif
-
         video::TransitionEffect *fx = m_effect.get();
         if (fx && !fx->finished()) {
             fx->tick(dtime);
@@ -676,8 +656,8 @@ void Client::tick(double dtime) {
         SDL_JoystickUpdate();
         if(joy != NULL) {
             // Use not only straight orientation data (0-1) but also acceleration data (2-3)
-            joy_x = SDL_JoystickGetAxis(joy,0) + SDL_JoystickGetAxis(joy,2) - m_joy_x0;
-            joy_y = SDL_JoystickGetAxis(joy,1) - SDL_JoystickGetAxis(joy,3) - m_joy_y0;
+            joy_x = SDL_JoystickGetAxis(joy,0) + SDL_JoystickGetAxis(joy,2);
+            joy_y = SDL_JoystickGetAxis(joy,1) - SDL_JoystickGetAxis(joy,3);
 
             server::Msg_MouseForce(options::GetDouble("MouseSpeed") * -dtime/3000.0 *
                  ecl::V2 (-joy_x*sqrt(abs(joy_x)), -joy_y*sqrt(abs(joy_y))));   // use joy**1.5 to allow more flexible (non-linear) control 
