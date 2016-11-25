@@ -166,6 +166,9 @@ namespace enigma { namespace gui {
         "  Γιάννης Ανθυμίδης - Yannis Anthymidis  (Greek translation)",
         "  Ash  (Level design)",
         "  Claudio B.  (Italian translation)",
+        "  Matthieu Valleton (Android Port, Smartphone UI for 1.21)",
+        "  Michi (Android Port, Smartphone UI)",
+        "  pelya (libsdl-android)",
         "  Roberto Bardin  (Level design)",
         "  Helge Blohmer  (Level design)",
         "  Nathan Bronecke  (Level design)",
@@ -437,6 +440,7 @@ namespace enigma { namespace gui {
         help        = brp->add(new StaticTextButton(N_("Help"), this));
         quit        = brp->add(new StaticTextButton(N_("Quit"), this));
 
+#ifndef ANDROID
         // We assume that we don't need more than two lines of flags.
         const int num_flags = NUMENTRIES(nls::languages) - 1;
         const int max_flags_per_line = (vminfo->width - 10) / 35;
@@ -463,6 +467,7 @@ namespace enigma { namespace gui {
                 flags.push_back(but);
             }
         }
+#endif
     }
 
     void MainMenu::draw_background(ecl::GC &gc)
