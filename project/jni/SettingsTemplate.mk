@@ -3,7 +3,7 @@
 APP_MODULES := application sdl-1.2 sdl_main sdl_native_helpers jpeg png ogg vorbis freetype tremor ogg
 
 # To filter out static libs from all libs in makefile
-APP_AVAILABLE_STATIC_LIBS := jpeg png tremor freetype xerces ogg tremor curl vorbis icuuc android_support gl4es
+APP_AVAILABLE_STATIC_LIBS := jpeg png tremor freetype xerces ogg tremor vorbis icuuc android_support gl4es
 
 APP_ABI := armeabi
 
