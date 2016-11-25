@@ -72,6 +72,7 @@ namespace enigma { namespace gui {
 
         bool handle_keydown (const SDL_Event *e);
         bool handle_mousedown (const SDL_Event *e);
+        bool handle_mouseup (const SDL_Event *e);
 
         //---------- Variables ----------//
         bool    displayScoreIcons;
@@ -80,6 +81,10 @@ namespace enigma { namespace gui {
         lev::ScoreManager *scoreMgr;
         lev::Index        *curIndex;
         ActionListener    *listener;
+
+        int  m_mousedown_x;
+        int  m_mousedown_y;
+        bool m_mouse_drag;
 
         int  ifirst;    // Index of "upper left" level
         int  iselected; // Index of selected level
