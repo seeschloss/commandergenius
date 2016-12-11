@@ -418,27 +418,15 @@ namespace enigma { namespace gui {
     void MainMenu::build_menu()
     {
         const video::VMInfo *vminfo = video::GetInfo();
-        const int vshrink = vminfo->width < 640 ? 1 : 0;
-        const int vsmall = vminfo->width < 800 ? 1 : 0;
-        int y[] = {75, 170, 190, 220, 220};
-        // parameters to use when flags are not at top: {75, 150, 170, 200, 200};
+        BuildVList bl(this, Rect(vminfo->width * 1/3 - 120, 220, 240, 200), 20);
+        BuildVList br(this, Rect(vminfo->width * 2/3 - 120, 220, 240, 200), 20);
+
+        startgame = bl.add(new StaticTextButton(N_("Start Game"), this));
+        levelpack = br.add(new StaticTextButton(N_("Level Pack"), this));
+
 #ifdef ENABLE_EXPERIMENTAL
-        y[1] = 150;
+        m_netgame   = bl.add(new StaticTextButton(N_("Network Game"), this));
 #endif
-        BuildVList b(this, Rect(vshrink?40:(vminfo->width - 160)/2, vshrink?120:y[vminfo->tt], vshrink?100:160, vshrink?25:40), vshrink?3:6);
-        BuildVList br = vshrink? BuildVList(this, Rect(180, 120, 100, 25), 3) : BuildVList(this, Rect(0, 0, 0, 0), 0);
-        BuildVList *brp = vshrink? &br : &b;
-        startgame = b.add(new StaticTextButton(N_("Start Game"), this));
-        levelpack = b.add(new StaticTextButton(N_("Level Pack"), this));
-#ifdef ENABLE_EXPERIMENTAL
-        m_netgame   = b.add(new StaticTextButton(N_("Network Game"), this));
-#endif
-        options     = b.add(new StaticTextButton(N_("Options"), this));
-#if 0
-        update      = brp->add(new StaticTextButton(N_("Update"), this));
-#endif
-        help        = brp->add(new StaticTextButton(N_("Help"), this));
-        quit        = brp->add(new StaticTextButton(N_("Quit"), this));
 
 #ifndef ANDROID
         // We assume that we don't need more than two lines of flags.
@@ -479,7 +467,7 @@ namespace enigma { namespace gui {
 
         blit(gc, vminfo->mbg_offsetx, vminfo->mbg_offsety, enigma::GetImage("menu_bg", ".jpg"));
 
-        Font *f = enigma::GetFont("levelmenu");
+        Font *f = enigma::GetFont("mainmenufont");
         Surface * logo(enigma::GetImage("enigma_logo3"));
         int x0=(vminfo->width - logo->width())/2;
         int y0[] = {0, 50, 60, 70, 80};

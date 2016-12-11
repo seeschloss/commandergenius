@@ -28,17 +28,7 @@ namespace video {
 
 enum VideoModes {
     VM_None = -1,
-    VM_640x480 = 0,    ///< 32 bit basic    -  4:3  - VGA
-    VM_640x512 = 1,    ///< 32 bit embedded -  5:4  - none
-    VM_800x600 = 2,    ///< 40 bit basic    -  4:3  - SVGA
-    VM_1024x768 = 3,   ///< 48 bit embedded -  4:3  - XGA
-    VM_960x720 = 4,    ///< 48 bit basic    -  4:3  - none
-    VM_1280x720 = 5,   ///< 48 bit embedded - 16:9  - HD720
-    VM_1280x960 = 6,   ///< 64 bit basic    -  4:3  - none
-    VM_1440x960 = 7,   ///< 64 bit embedded -  3:2  - none
-    VM_1280x1024 = 8,  ///< 64 bit embedded -  5:4  - SXGA
-    VM_1680x1050 = 9,  ///< 64 bit embedded - 16:10 - WSXGA+
-    VM_320x240 = 10,   ///< 16 bit basic    -  4:3  - CGA
+    VM_800x600 = 0,    ///< 40 bit basic    -  4:3  - SVGA
     VM_COUNT
 };
 

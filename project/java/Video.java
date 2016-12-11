@@ -612,7 +612,8 @@ class DemoRenderer extends GLSurfaceView_SDL.Renderer
 		mWidth = w - w % 2;
 		mHeight = h - h % 2;
 		mGl = gl;
-		nativeResize(mWidth, mHeight, Globals.KeepAspectRatio ? 1 : 0);
+		Log.i("SDL", "libSDL: DemoRenderer.onSurfaceChanged(): keep aspect ratio=" + Globals.KeepAspectRatio);
+		nativeResize(mWidth, mHeight, 0);
 	}
 
 	int mLastPendingResize = 0;

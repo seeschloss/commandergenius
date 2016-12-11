@@ -23,6 +23,7 @@
 #include "options.hh"
 #include "server.hh"
 #include "gui/HelpMenu.hh"
+#include "gui/TextMessage.hh"
 #include "main.hh"
 #include "gui/GameMenu.hh"
 #include "SoundEngine.hh"
@@ -502,6 +503,21 @@ static const char *helptext_ingame[] = {
     //    N_("Alt+Return:"),              N_("Switch between fullscreen and window"),
     0};
 
+void Client::show_message(const std::string &text, double duration) {
+    server::Msg_Pause(true);
+    video::TempInputGrab grab(false);
+
+    video::ShowMouse();
+    gui::displayText(text.c_str(), 200);
+    video::HideMouse();
+
+    if (m_state == cls_game)
+        display::RedrawAll(video::GetScreen());
+
+    server::Msg_Pause(false);
+    game::ResetGameTimer();
+}
+
 void Client::show_help() {
     server::Msg_Pause(true);
     video::TempInputGrab grab(false);
@@ -971,7 +987,8 @@ void Msg_Sparkle(const ecl::V2 &pos) {
 }
 
 void Msg_ShowText(const std::string &text, bool scrolling, double duration) {
-    display::GetStatusBar()->show_text(text, scrolling, duration);
+//    display::GetStatusBar()->show_text(text, scrolling, duration);
+    client_instance.show_message(text, duration);
 }
 
 void Msg_ShowDocument(const std::string &text, bool scrolling, double duration) {

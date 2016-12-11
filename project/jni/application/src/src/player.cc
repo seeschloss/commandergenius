@@ -30,6 +30,8 @@
 
 #include "ecl_util.hh"
 
+#include <android/log.h>
+
 using namespace std;
 using namespace enigma;
 using enigma::Actor;

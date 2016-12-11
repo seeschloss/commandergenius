@@ -46,15 +46,13 @@ namespace enigma { namespace gui {
     {
         resume  = new gui::StaticTextButton(N_("Resume Level"), this);
         restart = new gui::StaticTextButton(N_("Restart Level"), this);
-        options = new gui::StaticTextButton(N_("Options"), this);
         info    = new gui::StaticTextButton(N_("Level Info"), this);
         abort   = new gui::StaticTextButton(N_("Abort Level"), this);
     
         add(resume,     Rect(0,0,200,40));
         add(restart,    Rect(0,45,200,40));
-        add(options,    Rect(0,90,200,40));
-        add(info,       Rect(0,135,200,40));
-        add(abort,      Rect(0,180,200,40));
+        add(info,       Rect(0,90,200,40));
+        add(abort,      Rect(0,135,200,40));
         center();
     }
     
@@ -160,11 +158,6 @@ namespace enigma { namespace gui {
             server::Msg_LoadLevel(ind->getCurrent(), false);
             Menu::quit();
             
-        }
-        else if (w == options) {
-            enigma::gui::ShowOptionsMenu (0);
-            invalidate_all();
-//            Menu::quit();
         }
         else if (w == info) {
             LevelInspector m(ind->getCurrent());

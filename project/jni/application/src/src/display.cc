@@ -95,7 +95,7 @@ StatusBarImpl::StatusBarImpl(const ScreenArea &area)
   m_leveltime(0),
   m_showtime_p(true),
   m_counter(0),
-  m_showcounter_p(false),
+  m_showcounter_p(true),
   m_interruptible(true),
   m_text_active(false),
   playerImage(0),
@@ -158,22 +158,23 @@ void StatusBarImpl::redraw(ecl::GC &gc, const ScreenArea &r) {
     ScreenArea a = get_area();
     clip(gc, intersect(a, r));
 
-    blit(gc, a.x, a.y,
-         enigma::GetImage(player == enigma::YIN ? "inventory_yin" : "inventory_yang", ".png"));
+    set_color (gc, 0, 0, 0);
+    box(gc, vminfo->statusbararea.x, vminfo->statusbararea.y, 160, vminfo->statusbararea.h);
 
     // draw player indicator
     int ts = vminfo->tile_size;
-    int xoff = 35 * ts / 8;
-    int yoff = 4 * ts / 8 + vminfo->sb_coffsety;
-    blit(gc, a.x + xoff, a.y + yoff, enigma::GetImage("player_switch_anim", ".png"),
+
+    blit(gc, vminfo->sb_timearea.x + vminfo->sb_timearea.w/2 - ts/2,
+             vminfo->sb_movesarea.y + vminfo->sb_movesarea.h/2 - ts/2,
+         enigma::GetImage("player_switch_anim", ".png"),
          Rect(0, playerImage * ts, ts, ts));
 
-    //     set_color (gc, 255, 0, 0);
-    //     frame (gc, vminfo->sb_timearea);
-    //     frame (gc, vminfo->sb_textarea);
-    //     set_color (gc, 0, 255, 0);
-    //     frame (gc, vminfo->sb_movesarea);
-    //     frame (gc, vminfo->sb_itemarea);
+    //   set_color (gc, 255, 0, 0);
+    //   frame (gc, vminfo->sb_timearea);
+    //   frame (gc, vminfo->sb_textarea);
+    //   set_color (gc, 0, 255, 0);
+    //   frame (gc, vminfo->sb_movesarea);
+    //   frame (gc, vminfo->sb_itemarea);
 
     int x;
     int y;
@@ -307,16 +308,23 @@ void StatusBarImpl::redraw(ecl::GC &gc, const ScreenArea &r) {
         delete s_time;
     }
 
+    int itemsize = static_cast<int>(vminfo->tile_size * 1.125);
+    x = m_itemarea.x;
+    y = m_itemarea.y;
+    for (auto m : m_models) {
+        m->draw(gc, x, y);
+        x += itemsize;
+
+        if (x >= m_itemarea.w) {
+            x = m_itemarea.x;
+            y += itemsize;
+        }
+    }
+
     if (m_text_active) {
         m_textview.draw(gc, r);
     } else {
         client::Msg_FinishedText();
-        int itemsize = static_cast<int>(vminfo->tile_size * 1.125);
-        x = m_itemarea.x;
-        for (auto m : m_models) {
-            m->draw(gc, x, m_itemarea.y);
-            x += itemsize;
-        }
     }
     m_changedp = false;
 }
@@ -475,7 +483,7 @@ void TextDisplay::tick(double dtime) {
 void TextDisplay::draw(ecl::GC &gc, const ScreenArea &r) {
     clip(gc, intersect(area, r));
     set_color(gc, 0, 0, 0);
-    box(gc, area);
+    //box(gc, area);
     if (Surface *s = textsurface.get())
         blit(gc, area.x - round_nearest<int>(xoff), area.y, s);
 }
@@ -1863,7 +1871,7 @@ void GameDisplay::resize_game_area(int w, int h) {
                     << "): larger than physical display\n";
         return;
     }
-    Rect r((screenw - neww) / 2, (screenh - newh) / 2, neww, newh);
+    Rect r((screenw - neww), (screenh - newh) / 2, neww, newh);
     e->set_screen_area(r);
     follow_center();
 }
