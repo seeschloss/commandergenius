@@ -81,7 +81,7 @@ namespace enigma { namespace gui {
             while (pch != NULL) {
                 int word_width = f->get_width(pch);
 
-                if (line_width + word_width > 960) {
+                if (line_width + word_width > vminfo->sb_textarea.w) {
                     lines.push_back(line);
                     line_lengths.push_back(line_width);
                     line = "";
@@ -98,11 +98,11 @@ namespace enigma { namespace gui {
             lines.push_back(line);
             line_lengths.push_back(line_width);
 
-            int y_offset = (vminfo->height - (line_height * lines.size())) / 2;
+            int y_offset = (vminfo->sb_textarea.h - (line_height * lines.size())) / 2;
 
             for (size_t i = 0; i < lines.size(); i++) {
-                int x_offset = (960 - line_lengths[i]) / 2;
-                f->render(gc, 160 + x_offset,  y_offset + (line_height * i), lines[i].c_str());
+                int x_offset = (vminfo->sb_textarea.w - line_lengths[i]) / 2;
+                f->render(gc, vminfo->sb_textarea.x + x_offset,  y_offset + (line_height * i), lines[i].c_str());
             }
         }
     }

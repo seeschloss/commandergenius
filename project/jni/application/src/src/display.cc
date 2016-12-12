@@ -159,7 +159,7 @@ void StatusBarImpl::redraw(ecl::GC &gc, const ScreenArea &r) {
     clip(gc, intersect(a, r));
 
     set_color (gc, 0, 0, 0);
-    box(gc, vminfo->statusbararea.x, vminfo->statusbararea.y, 160, vminfo->statusbararea.h);
+    box(gc, vminfo->statusbararea.x, vminfo->statusbararea.y, vminfo->statusbararea.w, vminfo->statusbararea.h);
 
     // draw player indicator
     int ts = vminfo->tile_size;

@@ -591,6 +591,7 @@ namespace enigma {
         BootRegister(new Marble(0), "ac_marble");
         BootRegister(new Marble(0), "ac_marble_black");
         BootRegister(new Marble(1), "ac_marble_white");
+        BootRegister(new Marble(0), "ac_marble_pink");
         BootRegister(new Pearl(1), "ac_pearl");
         BootRegister(new Pearl(1), "ac_pearl_white");
         BootRegister(new Pearl(0), "ac_pearl_black");

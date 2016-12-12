@@ -311,20 +311,20 @@ Surface *back_buffer = 0;
 /*! List of available video modes. */
 video::VMInfo video_modes[] = {
                                {
-                                VM_800x600, 1120, 630,       // id, w, h
-                                48, VTS_48,                 // tilesize, tiletype
-                                "1120x630", "SVGA", "16:9",   // name, fsname, fs only
-                                "models-48.lua", "gfx48/",  // initscript, dir
-                                Rect(0, 3, 1120, 627),       // display area
+                                VM_800x600, 1488, 837,      // id, w, h
+                                64, VTS_64,                 // tilesize, tiletype
+                                "1448x837", "SVGA", "16:9", // name, fsname, fs only
+                                "models-64.lua", "gfx64/",  // initscript, dir
+                                Rect(0, 0, 1488, 837),      // display area
                                 0, 0,                       // menu background image offsets
                                 120, 78, 4, "-120x78",      // thumbnail size/extension
-                                Rect(160, 3, 960, 627),       // game area
-                                Rect(0,   3, 1120, 627),      // statusbar area
-                                Rect(0,   16, 160, 40),     // time area
-                                Rect(0,   60, 60, 40),     // modes area
-                                Rect(100, 60, 60, 40),     // moves area
-                                Rect(0,  100, 160, 544),    // inventory area
-                                Rect(160 + 48 + 16, 0, 960 - 48 - 48 - 16 - 16, 32),    // text area
+                                Rect(208,   0, 1280, 836),  // game area
+                                Rect(0,     0, 1280, 836),  // statusbar area
+                                Rect(0,    16,  208,  60),  // time area
+                                Rect(0,    80,   80,  60),  // modes area
+                                Rect(104,  80,  104,  60),  // moves area
+                                Rect(0,   160,  208, 676),  // inventory area
+                                Rect(208,   0, 1280, 836),  // text area
                                 0,                          // statusbar coffsety
                                 true, true,                 // available window, fullscreen
                                 "-2-0-", "-2-0-"            // fallback modes window, fullscreen
