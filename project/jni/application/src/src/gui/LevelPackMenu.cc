@@ -101,7 +101,7 @@ namespace enigma { namespace gui {
             {  // VTS_64 (1280x960)
                 3, 8,
                 25, 14,
-                60, 40, 22, 18, 20
+                70, 40, 45, 18, 20
             }
         };
         
@@ -288,7 +288,7 @@ namespace enigma { namespace gui {
             scrollLeft = new ImageButton("ic-left", "ic-left1", this);
             this->add(scrollLeft, Rect(param[vtt].hmargin + vh + 300 + param[vtt].hgroup_pack,
                     param[vtt].vmargin + vv + param[vtt].rows / 2 * (60 + param[vtt].vrow_row),
-                    param[vtt].hscrollbutton, 60));
+                    param[vtt].hscrollbutton, 100));
         }
                 
         if (needRightScroll) {
@@ -298,7 +298,7 @@ namespace enigma { namespace gui {
                     param[vtt].packcolumns * 300 + (param[vtt].packcolumns - 1) * 
                     param[vtt].hpack_pack,
                     param[vtt].vmargin + vv+ param[vtt].rows / 2 * (60 + param[vtt].vrow_row),
-                    param[vtt].hscrollbutton, 60));
+                    param[vtt].hscrollbutton, 100));
         }
     }
     

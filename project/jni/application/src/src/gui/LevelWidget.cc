@@ -68,7 +68,7 @@ namespace enigma { namespace gui {
         img_wrDifficult = enigma::GetImage("ic-wr-difficult");
         img_border      = enigma::GetImage(("thumbborder" + vminfo.thumbsext).c_str());
         img_editborder  = enigma::GetImage(("editborder" + vminfo.thumbsext).c_str());
-        thumbmode       = (vminfo.thumbw == 160) ? 2 : ((vminfo.thumbw == 120) ? 1 : 0);
+        thumbmode       = (vminfo.thumbw >= 160) ? 2 : ((vminfo.thumbw == 120) ? 1 : 0);
     }
     
     void LevelWidget::syncFromIndexMgr() {
