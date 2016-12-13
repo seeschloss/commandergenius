@@ -418,8 +418,8 @@ namespace enigma { namespace gui {
     void MainMenu::build_menu()
     {
         const video::VMInfo *vminfo = video::GetInfo();
-        BuildVList bl(this, Rect(vminfo->width * 1/3 - 120, 220, 240, 200), 20);
-        BuildVList br(this, Rect(vminfo->width * 2/3 - 120, 220, 240, 200), 20);
+        BuildVList bl(this, Rect(vminfo->width * 1/3 - 200, 300, 400, 200), 20);
+        BuildVList br(this, Rect(vminfo->width * 2/3 - 200, 300, 400, 200), 20);
 
         startgame = bl.add(new StaticTextButton(N_("Start Game"), this));
         levelpack = br.add(new StaticTextButton(N_("Level Pack"), this));

@@ -317,14 +317,14 @@ video::VMInfo video_modes[] = {
                                 "models-64.lua", "gfx64/",  // initscript, dir
                                 Rect(0, 0, 1488, 837),      // display area
                                 0, 0,                       // menu background image offsets
-                                120, 78, 4, "-120x78",      // thumbnail size/extension
+                                240, 160, 5, "-240x260",    // thumbnail size/extension
                                 Rect(208,   0, 1280, 836),  // game area
-                                Rect(0,     0, 1280, 836),  // statusbar area
-                                Rect(0,    16,  208,  60),  // time area
-                                Rect(0,    80,   80,  60),  // modes area
+                                Rect(  0,   0,  208, 836),  // statusbar area
+                                Rect(  0,  16,  208,  60),  // time area
+                                Rect(  0,  80,   80,  60),  // modes area
                                 Rect(104,  80,  104,  60),  // moves area
-                                Rect(0,   160,  208, 676),  // inventory area
-                                Rect(208,   0, 1280, 836),  // text area
+                                Rect(  0, 160,  208, 676),  // inventory area
+                                Rect(208 + 64,   0, 1280 - 64*2, 836),  // text area
                                 0,                          // statusbar coffsety
                                 true, true,                 // available window, fullscreen
                                 "-2-0-", "-2-0-"            // fallback modes window, fullscreen

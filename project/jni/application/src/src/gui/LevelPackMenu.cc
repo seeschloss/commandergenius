@@ -65,10 +65,10 @@ namespace enigma { namespace gui {
         commandHList = new HList;
         commandHList->set_spacing(60);
         commandHList->set_alignment(HALIGN_CENTER, VALIGN_TOP);
-        commandHList->set_default_size(160, 50);
+        commandHList->set_default_size(300, 80);
         commandHList->add_back(but_level);
         commandHList->add_back(but_main);
-        this->add(commandHList, Rect(130, vminfo.height-70, vminfo.width-260, 50));
+        this->add(commandHList, Rect(130, vminfo.height-120, vminfo.width-260, 80));
         
     }
     
@@ -93,18 +93,13 @@ namespace enigma { namespace gui {
                 15, 13,
                 15, 36, 22, 10, 15
             },
-            {  // VTS_40 (800x600)
-                3, 11,
-                15, 13,
-                15, 36, 22, 10, 15
-            },
             {  // VTS_48 (960x720)  VM_1024x768
                 3, 14,
                 15, 10,
                 70, 56, 22, 20, 20
             },
             {  // VTS_64 (1280x960)
-                5, 17,
+                3, 8,
                 25, 14,
                 60, 40, 22, 18, 20
             }
@@ -185,7 +180,7 @@ namespace enigma { namespace gui {
         groupsVList = new VList; 
         groupsVList->set_spacing(param[vtt].vrow_row);
         groupsVList->set_alignment(HALIGN_LEFT, VALIGN_CENTER);
-        groupsVList->set_default_size(vtt==0 ? 80 : 160, vtt==0 ? 17 : 35);
+        groupsVList->set_default_size(300, 60);
         
         for (int i = 0; i < usedGroupRows; i++) {
             if (i == 0 && needUpScroll) {
@@ -203,7 +198,7 @@ namespace enigma { namespace gui {
         }
 
         this->add(groupsVList, Rect(param[vtt].hmargin + vh, param[vtt].vmargin + vv, 
-                vtt==0 ? 80 : 160, param[vtt].rows * (vtt==0 ? 17 : 35) + 
+                300, param[vtt].rows * 60 + 
                 (param[vtt].rows - 1) * param[vtt].vrow_row));
         
         lastGroupName = curGroupName;
@@ -256,7 +251,7 @@ namespace enigma { namespace gui {
         packsHList = new HList; 
         packsHList->set_spacing(param[vtt].hpack_pack);
         packsHList->set_alignment(HALIGN_CENTER, VALIGN_TOP);
-        packsHList->set_default_size(vtt==0 ? 80 : 160, param[vtt].rows*(vtt==0 ? 17 : 35) + 
+        packsHList->set_default_size(300, param[vtt].rows*60 + 
                 (param[vtt].rows - 1) * param[vtt].vrow_row);
         
         for (int col = 0; col < param[vtt].packcolumns; col++) {
@@ -265,7 +260,7 @@ namespace enigma { namespace gui {
                 pl->set_spacing (param[vtt].vrow_row);
                 // first column is centered - if it is full it is like top alignment:
                 pl->set_alignment (HALIGN_LEFT, col == 0 ? VALIGN_CENTER : VALIGN_TOP);
-                pl->set_default_size (vtt==0 ? 80 : 160, vtt==0 ? 17 : 35);
+                pl->set_default_size (300, 60);
                 for (int row = 0; row < param[vtt].rows; row++) {
                     if (nextPack < packCount) {
                         lev::Index *ind = (*group)[nextPack];
@@ -281,29 +276,29 @@ namespace enigma { namespace gui {
                 break;
         }
 
-        this->add(packsHList, Rect(param[vtt].hmargin + vh + (vtt==0 ? 80 : 160) + param[vtt].hgroup_pack +
+        this->add(packsHList, Rect(param[vtt].hmargin + vh + 300 + param[vtt].hgroup_pack +
                 param[vtt].hscrollbutton + param[vtt].hscroll_pack, 
                 param[vtt].vmargin + vv, 
-                param[vtt].packcolumns * (vtt==0 ? 80 : 160) + (param[vtt].packcolumns - 1) * 
+                param[vtt].packcolumns * 300 + (param[vtt].packcolumns - 1) * 
                 param[vtt].hpack_pack, 
-                param[vtt].rows * (vtt==0 ? 17 : 35) + 
+                param[vtt].rows * 60 + 
                 (param[vtt].rows - 1) * param[vtt].vrow_row));
         
         if (needLeftScroll) {
             scrollLeft = new ImageButton("ic-left", "ic-left1", this);
-            this->add(scrollLeft, Rect(param[vtt].hmargin + vh + (vtt==0 ? 80 : 160) + param[vtt].hgroup_pack,
-                    param[vtt].vmargin + vv + param[vtt].rows / 2 * ((vtt==0 ? 17 : 35) + param[vtt].vrow_row),
-                    param[vtt].hscrollbutton, (vtt==0 ? 17 : 35)));
+            this->add(scrollLeft, Rect(param[vtt].hmargin + vh + 300 + param[vtt].hgroup_pack,
+                    param[vtt].vmargin + vv + param[vtt].rows / 2 * (60 + param[vtt].vrow_row),
+                    param[vtt].hscrollbutton, 60));
         }
                 
         if (needRightScroll) {
             scrollRight = new ImageButton("ic-right", "ic-right1", this);
-            this->add(scrollRight, Rect(param[vtt].hmargin + vh + (vtt==0 ? 80 : 160) + param[vtt].hgroup_pack +
+            this->add(scrollRight, Rect(param[vtt].hmargin + vh + 300 + param[vtt].hgroup_pack +
                     param[vtt].hscrollbutton + 2 * param[vtt].hscroll_pack +
-                    param[vtt].packcolumns * (vtt==0 ? 80 : 160) + (param[vtt].packcolumns - 1) * 
+                    param[vtt].packcolumns * 300 + (param[vtt].packcolumns - 1) * 
                     param[vtt].hpack_pack,
-                    param[vtt].vmargin + vv+ param[vtt].rows / 2 * ((vtt==0 ? 17 : 35) + param[vtt].vrow_row),
-                    param[vtt].hscrollbutton, (vtt==0 ? 17 : 35)));
+                    param[vtt].vmargin + vv+ param[vtt].rows / 2 * (60 + param[vtt].vrow_row),
+                    param[vtt].hscrollbutton, 60));
         }
     }
     
