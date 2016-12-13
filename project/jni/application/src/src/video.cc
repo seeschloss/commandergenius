@@ -317,7 +317,7 @@ video::VMInfo video_modes[] = {
                                 "models-64.lua", "gfx64/",  // initscript, dir
                                 Rect(0, 0, 1488, 837),      // display area
                                 0, 0,                       // menu background image offsets
-                                240, 160, 5, "-240x260",    // thumbnail size/extension
+                                240, 160, 5, "-240x160",    // thumbnail size/extension
                                 Rect(208,   0, 1280, 836),  // game area
                                 Rect(  0,   0,  208, 836),  // statusbar area
                                 Rect(  0,  16,  208,  60),  // time area
