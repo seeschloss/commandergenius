@@ -29,6 +29,8 @@
 
 #include <android/log.h>
 
+#include <sstream>
+
 using namespace ecl;
 using namespace std;
 
@@ -68,18 +70,16 @@ namespace enigma { namespace gui {
             int line_height = f->get_height();
             int space_width = f->get_width(" ");
 
-            char* to_split = (char *)malloc(strlen(text + 1));
-            strcpy(to_split, text);
-            char* pch;
-            pch = strtok(to_split, " ");
-
             std::vector<int> line_lengths;
             std::vector<std::string> lines;
             std::string line = "";
             int line_width = 0;
 
-            while (pch != NULL) {
-                int word_width = f->get_width(pch);
+            std::vector<std::string> tokens;
+            std::string word;
+            std::istringstream iss(text);
+            while (iss >> word) {
+                int word_width = f->get_width(word.c_str());
 
                 if (line_width + word_width > vminfo->sb_textarea.w) {
                     lines.push_back(line);
@@ -88,12 +88,8 @@ namespace enigma { namespace gui {
                     line_width = 0;
                 }
 
-                line += pch;
-                line += " ";
-                line_width += word_width;
-                line_width += space_width;
-
-                pch = strtok(NULL, " ");
+                line += word + " ";
+                line_width += word_width + space_width;
             }
             lines.push_back(line);
             line_lengths.push_back(line_width);
