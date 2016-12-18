@@ -313,7 +313,7 @@ video::VMInfo video_modes[] = {
                                {
                                 VM_800x600, 1488, 837,      // id, w, h
                                 64, VTS_64,                 // tilesize, tiletype
-                                "1448x837", "SVGA", "16:9", // name, fsname, fs only
+                                "1488x837", "SVGA", "16:9", // name, fsname, fs only
                                 "models-64.lua", "gfx64/",  // initscript, dir
                                 Rect(0, 0, 1488, 837),      // display area
                                 0, 0,                       // menu background image offsets
