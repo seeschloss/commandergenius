@@ -363,7 +363,6 @@ void Tick(double dtime) {
             state = sv_finished;
             current_state_dtime = 0;
             player::LevelFinished(1);  // remove player-controlled actors
-            client::Msg_Command("level_finished");
         }
         break;
     case sv_finished:
@@ -371,6 +370,7 @@ void Tick(double dtime) {
         if (current_state_dtime <= 2.5)
             gametick(dtime);
         else {
+            client::Msg_Command("level_finished");
             client::Msg_AdvanceLevel(lev::ADVANCE_NEXT_MODE);
             state = sv_waiting_for_clients;
         }

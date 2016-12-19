@@ -508,7 +508,7 @@ void Client::show_message(const std::string &text, double duration) {
     video::TempInputGrab grab(false);
 
     video::ShowMouse();
-    gui::displayText(text.c_str(), 200);
+    gui::displayText(text.c_str(), duration);
     video::HideMouse();
 
     if (m_state == cls_game)
@@ -825,7 +825,7 @@ void Client::level_finished() {
     if (m_cheater)
         text += _(" Cheater!");
 
-    Msg_ShowText(text, false);
+    Msg_ShowText(text, false, 2.0);
 
     if (!m_cheater) {
         scm->updateUserScore(curProxy, difficulty, level_time);
@@ -845,10 +845,6 @@ void Client::level_loaded(bool isRestart) {
     lev::ScoreManager *scm = lev::ScoreManager::instance();
     lev::Proxy *curProxy = ind->getCurrent();
 
-    // update window title
-    video::SetCaption(ecl::strf(_("Enigma pack %s - level #%d: %s"), ind->getName().c_str(),
-                                ind->getCurrentLevel(), curProxy->getTitle().c_str()).c_str());
-
     std::string hunted = init_hunted_time();  // sets m_hunt_against_time (used below)
     documentHistory.clear();
     consoleIndex = 0;
@@ -863,20 +859,16 @@ void Client::level_loaded(bool isRestart) {
         displayed_info += ecl::timeformat(m_hunt_against_time);
         //+ _(" by ") +hunted;
         // makes the string too long in many levels
-        Msg_ShowDocument(displayed_info, true, 4.0);
+        Msg_ShowDocument(displayed_info, true);
     } else {
         displayed_info = displayedLevelInfo(curProxy);
-        Msg_ShowDocument(displayed_info, true, 2.0);
+        Msg_ShowDocument(displayed_info, true);
     }
 
     sound::StartLevelMusic();
 
-    // start screen transition
-    ecl::GC gc(video::BackBuffer());
-    display::DrawAll(gc);
+	display::RedrawAll(video::GetScreen());
 
-    m_effect.reset(video::MakeEffect((isRestart ? video::TM_SQUARES : video::TM_PUSH_RANDOM),
-                                     video::BackBuffer()));
     m_cheater = false;
     m_state = cls_preparing_game;
 }

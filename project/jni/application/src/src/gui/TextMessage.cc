@@ -38,15 +38,15 @@ namespace enigma { namespace gui {
 
     /* -------------------- TextMessage -------------------- */
 
-    TextMessage::TextMessage (const char *text_, int xoffset_) : 
+    TextMessage::TextMessage (const char *text_, int timeout_) : 
         displayed(false),
-        text        (text_),
-        cfg         (xoffset_)
+        text     (text_),
+        timeout  (timeout_),
+        enterTickTime (0)
     {
-        const video::VMInfo &vminfo = *video::GetInfo();
-        const int vshrink = vminfo.width < 640 ? 1 : 0;
+        enterTickTime = SDL_GetTicks();
     }
-    
+
     bool TextMessage::on_event (const SDL_Event &e) 
     {
         if (e.type == SDL_MOUSEBUTTONDOWN) 
@@ -56,10 +56,15 @@ namespace enigma { namespace gui {
         }
         return false;
     }
-    
+
     void TextMessage::draw_background (ecl::GC &gc) 
     {
         const video::VMInfo* vminfo = video::GetInfo();
+
+        if (timeout > 0 && SDL_GetTicks() - enterTickTime >= timeout * 1000) {
+            Menu::quit();
+            return;
+        }
 
         if (!displayed) {
             displayed = true;
@@ -100,18 +105,25 @@ namespace enigma { namespace gui {
                 int x_offset = (vminfo->sb_textarea.w - line_lengths[i]) / 2;
                 f->render(gc, vminfo->sb_textarea.x + x_offset,  y_offset + (line_height * i), lines[i].c_str());
             }
+
+            if (timeout <= 0) {
+                Font *f_small = enigma::GetFont("messagedismissfont");
+                std::string tap("tap to dismiss");
+                int x_offset = (vminfo->sb_textarea.w - f_small->get_width(tap.c_str())) / 2;
+                f_small->render(gc, vminfo->sb_textarea.x + x_offset,  y_offset + (line_height * (lines.size() + 1)), tap.c_str());
+            }
         }
     }
-    
+
     /* -------------------- Functions -------------------- */
-    
-    void displayText(const char *text, int xoffset) 
+
+    void displayText(const char *text, int timeout) 
     {
     //    FX_Fade (video::FADEOUT);
-        TextMessage menu(text, xoffset);
-        menu.draw_all();
+        TextMessage message(text, timeout);
+        message.draw_all();
     //    FX_Fade (video::FADEIN);
-        menu.manage();
+        message.manage();
     }
 
 }} // namespace enigma::gui

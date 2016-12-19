@@ -23,34 +23,20 @@
 #include "gui/Menu.hh"
 
 namespace enigma { namespace gui {
-    struct TextMessageConfig {
-        int         x0, x1;         // x coordinates of first and second column
-        int         y0;             // y coordinate
-        int         yskip;
-        std::string fontname;
-    
-        TextMessageConfig (int xoffset) {
-            x0       = 40;
-            x1       = x0 + xoffset;
-            y0       = 40;
-            yskip    = 30;
-            fontname = "menufont";
-        }
-    };
-
     class TextMessage : public Menu {
     public:
-        TextMessage (const char *text_, int xoffset);
+        TextMessage (const char *text_, int timeout_);
     private:
         bool on_event           (const SDL_Event &e);
         void draw_background    (ecl::GC &gc);
-    
+
         const char      *text;
-        TextMessageConfig   cfg;
+        int timeout;
         bool displayed;
+        Uint32 enterTickTime;
     };
-    
-    void displayText (const char *text, int xoffset);
+
+    void displayText (const char *text, int timeout);
 
 }} // namespace enigma::gui
 #endif // ENIGMA_TEXT_MESSAGE_HH
