@@ -154,9 +154,9 @@ namespace enigma { namespace gui {
                 // force a reload from file
                 lev::Proxy::releaseCache();
             }
+            Menu::quit();
             client::Stop ();
             server::Msg_LoadLevel(ind->getCurrent(), false);
-            Menu::quit();
             
         }
         else if (w == info) {

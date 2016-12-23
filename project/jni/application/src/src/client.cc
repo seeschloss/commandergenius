@@ -503,8 +503,10 @@ static const char *helptext_ingame[] = {
     //    N_("Alt+Return:"),              N_("Switch between fullscreen and window"),
     0};
 
-void Client::show_message(const std::string &text, double duration) {
-    server::Msg_Pause(true);
+void Client::show_message(const std::string &text, double duration, bool pause) {
+    if (pause)
+        server::Msg_Pause(true);
+
     video::TempInputGrab grab(false);
 
     video::ShowMouse();
@@ -514,7 +516,9 @@ void Client::show_message(const std::string &text, double duration) {
     if (m_state == cls_game)
         display::RedrawAll(video::GetScreen());
 
-    server::Msg_Pause(false);
+    if (pause)
+        server::Msg_Pause(false);
+
     game::ResetGameTimer();
 }
 
@@ -825,7 +829,7 @@ void Client::level_finished() {
     if (m_cheater)
         text += _(" Cheater!");
 
-    Msg_ShowText(text, false, 2.0);
+    Msg_ShowText(text, false, 2.0, false);
 
     if (!m_cheater) {
         scm->updateUserScore(curProxy, difficulty, level_time);
@@ -929,6 +933,8 @@ void Msg_AdvanceLevel(lev::LevelAdvanceMode mode) {
 
     if (level_index->advanceLevel(mode)) {
         // now we may advance
+//    FX_Fade (video::FADEOUT);
+//    FX_Fade (video::FADEIN);
         server::Msg_LoadLevel(level_index->getCurrent(), false);
     } else
         client::Msg_Command("abort");
@@ -978,14 +984,13 @@ void Msg_Sparkle(const ecl::V2 &pos) {
     display::AddEffect(pos, "ring-anim", true);
 }
 
-void Msg_ShowText(const std::string &text, bool scrolling, double duration) {
-//    display::GetStatusBar()->show_text(text, scrolling, duration);
-    client_instance.show_message(text, duration);
+void Msg_ShowText(const std::string &text, bool scrolling, double duration, bool pause) {
+    client_instance.show_message(text, duration, pause);
 }
 
 void Msg_ShowDocument(const std::string &text, bool scrolling, double duration) {
     client_instance.registerDocument(text);
-    Msg_ShowText(text, scrolling, duration);
+    Msg_ShowText(text, scrolling, duration, true);
 }
 
 void Msg_FinishedText() {

@@ -129,7 +129,7 @@ public:
     void registerDocument(std::string text);
     void finishedText();
 
-    void show_message(const std::string &text, double duration);
+    void show_message(const std::string &text, double duration, bool pause = true);
 
 private:
     std::string init_hunted_time();

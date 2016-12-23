@@ -45,6 +45,28 @@ namespace enigma { namespace gui {
         enterTickTime (0)
     {
         enterTickTime = SDL_GetTicks();
+
+        display::RedrawAll(video::GetScreen());
+
+        const video::VMInfo* vminfo = video::GetInfo();
+
+        Font *f = enigma::GetFont("messagefont");
+        std::vector<std::string> lines = wrapText(text, f, vminfo->sb_textarea.w);
+
+        int line_height = f->get_height();
+        int y_offset = (vminfo->sb_textarea.h - (line_height * lines.size())) / 2;
+        for (size_t i = 0; i < lines.size(); i++) {
+            gui::Label *textLabel = new gui::Label(lines[i], HALIGN_CENTER, VALIGN_TOP);
+            textLabel->set_font(f);
+            add(textLabel, Rect(vminfo->sb_textarea.x, y_offset + (line_height * i), vminfo->sb_textarea.w, line_height));
+        }
+
+        if (timeout <= 0) {
+            Font *f_small = enigma::GetFont("messagedismissfont");
+            gui::Label *textLabel = new gui::Label("tap to dismiss", HALIGN_CENTER, VALIGN_TOP);
+            textLabel->set_font(f_small);
+            add(textLabel, Rect(vminfo->sb_textarea.x, y_offset + (line_height * (lines.size() + 1)), vminfo->sb_textarea.w, line_height));
+        }
     }
 
     bool TextMessage::on_event (const SDL_Event &e) 
@@ -57,61 +79,40 @@ namespace enigma { namespace gui {
         return false;
     }
 
+    std::vector<std::string> wrapText (std::string text, Font *f, int width)
+    {
+        int space_width = f->get_width(" ");
+
+        std::vector<std::string> lines;
+        std::string line = "";
+        int line_width = 0;
+
+        std::vector<std::string> tokens;
+        std::string word;
+        std::istringstream iss(text);
+        while (iss >> word) {
+            int word_width = f->get_width(word.c_str());
+
+            if (line_width + word_width > width) {
+                lines.push_back(line);
+                line = "";
+                line_width = 0;
+            }
+
+            line += word + " ";
+            line_width += word_width + space_width;
+        }
+
+        lines.push_back(line);
+
+        return lines;
+    }
+
     void TextMessage::draw_background (ecl::GC &gc) 
     {
-        const video::VMInfo* vminfo = video::GetInfo();
-
         if (timeout > 0 && SDL_GetTicks() - enterTickTime >= timeout * 1000) {
             Menu::quit();
             return;
-        }
-
-        if (!displayed) {
-            displayed = true;
-            display::RedrawAll(video::GetScreen());
-
-            Font *f = enigma::GetFont("messagefont");
-
-            int line_height = f->get_height();
-            int space_width = f->get_width(" ");
-
-            std::vector<int> line_lengths;
-            std::vector<std::string> lines;
-            std::string line = "";
-            int line_width = 0;
-
-            std::vector<std::string> tokens;
-            std::string word;
-            std::istringstream iss(text);
-            while (iss >> word) {
-                int word_width = f->get_width(word.c_str());
-
-                if (line_width + word_width > vminfo->sb_textarea.w) {
-                    lines.push_back(line);
-                    line_lengths.push_back(line_width);
-                    line = "";
-                    line_width = 0;
-                }
-
-                line += word + " ";
-                line_width += word_width + space_width;
-            }
-            lines.push_back(line);
-            line_lengths.push_back(line_width);
-
-            int y_offset = (vminfo->sb_textarea.h - (line_height * lines.size())) / 2;
-
-            for (size_t i = 0; i < lines.size(); i++) {
-                int x_offset = (vminfo->sb_textarea.w - line_lengths[i]) / 2;
-                f->render(gc, vminfo->sb_textarea.x + x_offset,  y_offset + (line_height * i), lines[i].c_str());
-            }
-
-            if (timeout <= 0) {
-                Font *f_small = enigma::GetFont("messagedismissfont");
-                std::string tap("tap to dismiss");
-                int x_offset = (vminfo->sb_textarea.w - f_small->get_width(tap.c_str())) / 2;
-                f_small->render(gc, vminfo->sb_textarea.x + x_offset,  y_offset + (line_height * (lines.size() + 1)), tap.c_str());
-            }
         }
     }
 
@@ -119,10 +120,8 @@ namespace enigma { namespace gui {
 
     void displayText(const char *text, int timeout) 
     {
-    //    FX_Fade (video::FADEOUT);
         TextMessage message(text, timeout);
         message.draw_all();
-    //    FX_Fade (video::FADEIN);
         message.manage();
     }
 

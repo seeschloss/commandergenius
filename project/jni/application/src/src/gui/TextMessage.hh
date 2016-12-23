@@ -21,6 +21,7 @@
 #define ENIGMA_TEXT_MESSAGE_HH
 
 #include "gui/Menu.hh"
+#include "ecl_font.hh"
 
 namespace enigma { namespace gui {
     class TextMessage : public Menu {
@@ -37,6 +38,7 @@ namespace enigma { namespace gui {
     };
 
     void displayText (const char *text, int timeout);
+    std::vector<std::string> wrapText (const std::string text, ecl::Font *f, int width);
 
 }} // namespace enigma::gui
 #endif // ENIGMA_TEXT_MESSAGE_HH

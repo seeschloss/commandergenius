@@ -49,7 +49,7 @@ void Msg_PlayerPosition(unsigned iplayer, const ecl::V2 &pos);
 
 void Msg_Sparkle(const ecl::V2 &pos);
 
-void Msg_ShowText(const std::string &text, bool scrolling, double duration = -1);
+void Msg_ShowText(const std::string &text, bool scrolling, double duration = -1, bool pause = true);
 void Msg_ShowDocument(const std::string &text, bool scrolling, double duration = -1);
 void Msg_FinishedText();
 
