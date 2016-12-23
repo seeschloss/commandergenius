@@ -46,7 +46,9 @@ namespace enigma { namespace gui {
     {
         enterTickTime = SDL_GetTicks();
 
-        display::RedrawAll(video::GetScreen());
+        ecl::Screen *scr = video::GetScreen();
+        ecl::GC gc(scr->get_surface());
+        display::DrawAll(gc);
 
         const video::VMInfo* vminfo = video::GetInfo();
 

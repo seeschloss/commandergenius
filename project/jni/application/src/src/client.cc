@@ -871,7 +871,9 @@ void Client::level_loaded(bool isRestart) {
 
     sound::StartLevelMusic();
 
-	display::RedrawAll(video::GetScreen());
+    ecl::Screen *scr = video::GetScreen();
+    ecl::GC gc(scr->get_surface());
+    display::DrawAll(gc);
 
     m_cheater = false;
     m_state = cls_preparing_game;
