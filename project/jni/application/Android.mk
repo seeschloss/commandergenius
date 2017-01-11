@@ -48,11 +48,11 @@ endif
 
 LOCAL_SHARED_LIBRARIES := sdl-$(SDL_VERSION) $(filter-out $(APP_AVAILABLE_STATIC_LIBS), $(COMPILED_LIBRARIES))
 
-LOCAL_STATIC_LIBRARIES := $(filter $(APP_AVAILABLE_STATIC_LIBS), $(COMPILED_LIBRARIES))
+LOCAL_STATIC_LIBRARIES := $(filter $(APP_AVAILABLE_STATIC_LIBS), $(COMPILED_LIBRARIES)) android_native_app_glue ndk_helper
 
 APP_STL := gnustl_static
 
-LOCAL_LDLIBS := $(APPLICATION_GLES_LIBRARY) -ldl -llog -lz # -lgnustl_static
+LOCAL_LDLIBS := $(APPLICATION_GLES_LIBRARY) -ldl -llog -lz -landroid # -lgnustl_static
 
 LOCAL_LDFLAGS := -Lobj/local/$(TARGET_ARCH_ABI)
 
@@ -70,6 +70,8 @@ obj/local/$(TARGET_ARCH_ABI)/libssl.so: obj/local/$(TARGET_ARCH_ABI)/libssl.so.s
 obj/local/$(TARGET_ARCH_ABI)/libcurl.so: obj/local/$(TARGET_ARCH_ABI)/libcurl-sdl.so
 
 include $(BUILD_SHARED_LIBRARY)
+
+$(call import-module,android/native_app_glue)
 
 ifneq ($(APPLICATION_CUSTOM_BUILD_SCRIPT),)
 

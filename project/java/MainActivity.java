@@ -101,10 +101,53 @@ import java.util.Arrays;
 
 public class MainActivity extends Activity
 {
+	static AssetManager mAssetMgr;
+
+	public static void forceScreenOrientation(int orientation)
+	{
+		instance._forceScreenOrientation(orientation);
+	}
+
+	public static boolean isScreenInverted()
+	{
+		return instance._isScreenInverted();
+	}
+
+	public void _forceScreenOrientation(int orientation)
+	{
+		// I know, yet another set of magic numbers which have different values
+		// than the two or three other numbers for orientations. But I don't
+		// know how else to do.
+		Log.i("SDL", "libSDL: setting screen orientation: " + orientation);
+		switch (orientation) {
+			case 0:
+				setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+				break;
+			case 1:
+				setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+				break;
+			case 2:
+				setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
+				break;
+		}
+	}
+
+	public boolean _isScreenInverted()
+	{
+		int rotation = Surface.ROTATION_0;
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.FROYO) {
+			rotation = getWindowManager().getDefaultDisplay().getRotation();
+		}
+
+		return (rotation == Surface.ROTATION_180 || rotation == Surface.ROTATION_270);
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+
+		mAssetMgr = getAssets();
 
 		instance = this;
 		// fullscreen mode
@@ -1577,7 +1620,11 @@ public class MainActivity extends Activity
 
 	void setScreenOrientation()
 	{
-		setRequestedOrientation(Globals.HorizontalOrientation ? ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		if( android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD )
+			setRequestedOrientation(Globals.HorizontalOrientation ? ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+		else
+			setRequestedOrientation(Globals.HorizontalOrientation ? ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
 	}
 
 	@Override

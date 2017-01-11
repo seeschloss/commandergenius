@@ -174,6 +174,8 @@ private:
     std::string m_user_input;
     std::string m_error_message;
 
+    bool m_inverted_controls;
+
 #ifdef ANDROID
     Sint16 m_joy_x0;
     Sint16 m_joy_y0;

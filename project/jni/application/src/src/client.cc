@@ -54,6 +54,9 @@
 #include <SDL.h>
 #endif
 
+#include <android/configuration.h>
+#include <android/log.h>
+
 #include "client_internal.hh"
 
 namespace enigma {
@@ -109,7 +112,7 @@ const char HSEP = '^';  // history separator (use character that user cannot use
 /* -------------------- Client class -------------------- */
 
 Client::Client()
-: m_state(cls_idle), m_levelname(), m_hunt_against_time(0), m_cheater(false), m_user_input() {
+: m_state(cls_idle), m_levelname(), m_hunt_against_time(0), m_cheater(false), m_user_input(), m_inverted_controls(false) {
     m_network_host = 0;
 }
 
@@ -546,6 +549,8 @@ void Client::show_help() {
 }
 
 void Client::show_menu(bool isESC) {
+    screen_set_orientation(0);
+
     if (isESC && server::LastMenuTime != 0.0 && server::LevelTime - server::LastMenuTime < 0.3) {
         return;  // protection against ESC D.o.S. attacks
     }
@@ -570,8 +575,11 @@ void Client::show_menu(bool isESC) {
     video::HideMouse();
 
     update_mouse_button_state();
-    if (m_state == cls_game)
+    if (m_state == cls_game) {
+        m_inverted_controls = screen_is_inverted();
+        screen_set_orientation(m_inverted_controls ? 2 : 1);
         display::RedrawAll(screen);
+    }
 
     server::Msg_Pause(false);
     game::ResetGameTimer();
@@ -676,8 +684,14 @@ void Client::tick(double dtime) {
         SDL_JoystickUpdate();
         if(joy != NULL) {
             // Use not only straight orientation data (0-1) but also acceleration data (2-3)
-            joy_x = SDL_JoystickGetAxis(joy,0) + SDL_JoystickGetAxis(joy,2);
-            joy_y = SDL_JoystickGetAxis(joy,1) - SDL_JoystickGetAxis(joy,3);
+
+            if (m_inverted_controls) {
+                joy_x = -1*SDL_JoystickGetAxis(joy,0) - SDL_JoystickGetAxis(joy,2);
+                joy_y = -1*SDL_JoystickGetAxis(joy,1) + SDL_JoystickGetAxis(joy,3);
+            } else {
+                joy_x = SDL_JoystickGetAxis(joy,0) + SDL_JoystickGetAxis(joy,2);
+                joy_y = SDL_JoystickGetAxis(joy,1) - SDL_JoystickGetAxis(joy,3);
+            }
 
             server::Msg_MouseForce(options::GetDouble("MouseSpeed") * -dtime/3000.0 *
                  ecl::V2 (-joy_x*sqrt(abs(joy_x)), -joy_y*sqrt(abs(joy_y))));   // use joy**1.5 to allow more flexible (non-linear) control 
@@ -877,6 +891,8 @@ void Client::level_loaded(bool isRestart) {
 
     m_cheater = false;
     m_state = cls_preparing_game;
+    m_inverted_controls = screen_is_inverted();
+    screen_set_orientation(m_inverted_controls ? 2 : 1);
 }
 
 void Client::handle_message(Message *m) {  // @@@ unused
@@ -955,9 +971,11 @@ bool AbortGameP() {
 void Msg_Command(const std::string &cmd) {
     if (cmd == "abort") {
         client_instance.abort();
+        screen_set_orientation(0);
     } else if (cmd == "level_finished") {
         client::Msg_PlaySound("finished", 1.0);
         client_instance.level_finished();
+        screen_set_orientation(0);
     } else if (cmd == "cheater") {
         client_instance.mark_cheater();
     } else if (cmd == "easy_going") {

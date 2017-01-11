@@ -245,8 +245,8 @@ LevelInspector::LevelInspector(lev::Proxy *aLevel, bool showDeveloperInfo):
         author.add(new Label(tmp, HALIGN_LEFT)); // subtitle
         author.add(new Label(levelProxy->getAuthor(), HALIGN_LEFT));
         
-        BuildVList address(this, Rect(hmargin + 200 + 10, vmargin+3*(35 + vspacing),
-                vminfo->width - (hmargin + 200 + 10) - hmargin, 35), vspacing);
+        BuildVList address(this, Rect(hmargin + 200 + 10, vmargin+3*(30 + vspacing),
+                vminfo->width - (hmargin + 200 + 10) - hmargin, 30), vspacing);
         address.add(new Label(levelProxy->getContact(), HALIGN_LEFT));
         address.add(new Label(levelProxy->getHomepage(), HALIGN_LEFT));
 

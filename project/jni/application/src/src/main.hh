@@ -44,6 +44,13 @@
 #endif
 #include <xercesc/util/TransService.hpp>
 
+#include "SDL_android.h"
+#include <android/asset_manager_jni.h>
+
+AAssetManager *get_asset_manager();
+void screen_set_orientation(int o);
+bool screen_is_inverted();
+
 namespace enigma
 {
 /* -------------------- Application services -------------------- */

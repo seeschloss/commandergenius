@@ -86,7 +86,11 @@ XERCES_CPP_NAMESPACE_USE
 #endif
 
 #ifdef ANDROID
+#include <jni.h>
+#include <android/configuration.h>
 #include <android/log.h>
+#include <android/native_activity.h>
+#include <android_native_app_glue.h>
 #define fprintf(f, ...) __android_log_print(ANDROID_LOG_INFO, "Enigma", __VA_ARGS__);
 #endif
 
@@ -932,10 +936,104 @@ void Application::shutdown()
     delete ::nullbuffer;
 }
 
+// This function retrieves a static member of SDLActivity called mAssetMgr
+// which is initialized in the onCreate() method like so:
+// ...
+//   mAssetMgr = getAssets();
+// ...
+// You can also call the getAssets() method from the native code.
+
+AAssetManager * get_asset_manager()
+{
+	JavaVM *vm = SDL_ANDROID_JavaVM();
+	JNIEnv *g_env = NULL;
+	vm->GetEnv((void **) &g_env, JNI_VERSION_1_6);
+
+    jclass sdlClass = g_env->FindClass("fr/seos/enigma/MainActivity");
+
+    if (sdlClass == 0) {
+        return NULL;
+	}
+
+    jfieldID assman = g_env->GetStaticFieldID(sdlClass, 
+            "mAssetMgr", "Landroid/content/res/AssetManager;");
+
+    if (assman == 0) {
+        return NULL;
+	}
+
+    jobject assets = g_env->GetStaticObjectField(sdlClass, assman);
+
+    if (assets == 0) {
+        return NULL;
+	}
+
+    return AAssetManager_fromJava(g_env, assets);
+}
+
+void screen_set_orientation(int o)
+{
+	JavaVM *vm = SDL_ANDROID_JavaVM();
+	JNIEnv *g_env = NULL;
+	vm->GetEnv((void **) &g_env, JNI_VERSION_1_6);
+
+    jclass sdlClass = g_env->FindClass("fr/seos/enigma/MainActivity");
+
+    if (sdlClass == 0) {
+        fprintf(stderr, "Bad class\n");
+        return;
+	}
+
+    jmethodID method = g_env->GetStaticMethodID(sdlClass, "forceScreenOrientation", "(I)V");
+
+	jint orientation = o;
+
+    if (method == 0) {
+        fprintf(stderr, "Bad method\n");
+        return;
+	}
+
+	fprintf(stderr, "Setting screen orientation to '%d'\n", o);
+
+    g_env->CallStaticVoidMethod(sdlClass, method, orientation);
+
+	g_env->DeleteLocalRef(sdlClass);
+}
+
+bool screen_is_inverted()
+{
+	JavaVM *vm = SDL_ANDROID_JavaVM();
+	JNIEnv *g_env = NULL;
+	vm->GetEnv((void **) &g_env, JNI_VERSION_1_6);
+
+    jclass sdlClass = g_env->FindClass("fr/seos/enigma/MainActivity");
+
+    if (sdlClass == 0) {
+        fprintf(stderr, "Bad class\n");
+        return false;
+	}
+
+    jmethodID method = g_env->GetStaticMethodID(sdlClass, "isScreenInverted", "()Z");
+
+    if (method == 0) {
+        fprintf(stderr, "Bad method\n");
+        return false;
+	}
+
+    jboolean inverted = g_env->CallStaticBooleanMethod(sdlClass, method);
+
+	g_env->DeleteLocalRef(sdlClass);
+
+	return inverted;
+}
+
 int main(int argc, char **argv)
 {
     try {
         app.init(argc,argv);
+
+		screen_set_orientation(0);
+
         if (!app.isMakePreviews)
             gui::ShowMainMenu();
         app.shutdown();
