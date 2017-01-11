@@ -260,7 +260,7 @@ class DataDownloader extends Thread
 				//Log.i("SDL", "Matched: " + String.valueOf(matched));
 				if( ! matched )
 					throw new IOException();
-				Status.setText( res.getString(R.string.download_unneeded) );
+
 				for( int i = 1; i < downloadUrls.length; i++ )
 				{
 					if( downloadUrls[i].indexOf("obb:") == 0 ) // APK expansion file provided by Google Play
@@ -687,7 +687,7 @@ class DataDownloader extends Thread
 					if( System.currentTimeMillis() > updateStatusTime + 1000 )
 					{
 						updateStatusTime = System.currentTimeMillis();
-						Status.setText( downloadCount + "/" + downloadTotal + ": " + res.getString(R.string.dl_progress, percent, path) );
+						Status.setText( "Preparing game files " + downloadCount + "/" + downloadTotal + ": " + res.getString(R.string.dl_progress, percent, path) );
 					}
 					continue;
 				} catch( Exception e ) { }
