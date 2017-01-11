@@ -97,6 +97,7 @@ import android.app.UiModeManager;
 import android.Manifest;
 import android.content.pm.PermissionInfo;
 import java.util.Arrays;
+import android.content.res.AssetManager;
 
 
 public class MainActivity extends Activity
