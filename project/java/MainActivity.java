@@ -1256,7 +1256,6 @@ public class MainActivity extends Activity
 		int rotation = Surface.ROTATION_0;
 		if( android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.FROYO )
 			rotation = getWindowManager().getDefaultDisplay().getRotation();
-		AccelerometerReader.gyro.invertedOrientation = ( rotation == Surface.ROTATION_180 || rotation == Surface.ROTATION_270 );
 		//Log.d("SDL", "updateScreenOrientation(): screen orientation: " + rotation + " inverted " + AccelerometerReader.gyro.invertedOrientation);
 	}
 
